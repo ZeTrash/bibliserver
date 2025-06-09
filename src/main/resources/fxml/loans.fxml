@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bibliserver.controller.LoansController"
+      style="-fx-padding: 20;">
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Gestion des Emprunts" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="filterComboBox" promptText="Filtrer par statut">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Tous"/>
+                    <String fx:value="En cours"/>
+                    <String fx:value="En retard"/>
+                    <String fx:value="Retournés"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="Nouvel Emprunt" onAction="#showNewLoanDialog"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+
+    <TableView fx:id="loansTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="bookTitleColumn" text="Titre du Livre" prefWidth="250"/>
+            <TableColumn fx:id="userNameColumn" text="Emprunteur" prefWidth="150"/>
+            <TableColumn fx:id="loanDateColumn" text="Date d'emprunt" prefWidth="120"/>
+            <TableColumn fx:id="dueDateColumn" text="Date de retour prévue" prefWidth="120"/>
+            <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Dialogue de nouvel emprunt -->
+    <Dialog fx:id="loanDialog" headerText="Nouvel Emprunt">
+        <dialogPane>
+            <DialogPane>
+                <content>
+                    <GridPane hgap="10" vgap="10">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+
+                        <Label text="Livre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <ComboBox fx:id="bookComboBox" prefWidth="200"
+                                GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Utilisateur:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="userComboBox" prefWidth="200"
+                                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Date d'emprunt:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <DatePicker fx:id="loanDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Durée (jours):" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Spinner fx:id="durationSpinner" min="1" max="30" initialValue="14"
+                                GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                        <Label text="Date de retour prévue:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <Label fx:id="dueDateLabel" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    </GridPane>
+                </content>
+                <buttonTypes>
+                    <ButtonType fx:constant="OK"/>
+                    <ButtonType fx:constant="CANCEL"/>
+                </buttonTypes>
+            </DialogPane>
+        </dialogPane>
+    </Dialog>
+
+    <!-- Dialogue de confirmation de retour -->
+    <Dialog fx:id="returnDialog" headerText="Retour de Livre">
+        <dialogPane>
+            <DialogPane>
+                <content>
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <Label text="Confirmez-vous le retour de ce livre ?"/>
+                        <Label fx:id="returnBookInfoLabel"/>
+                        <Label fx:id="returnUserInfoLabel"/>
+                        <CheckBox fx:id="damageCheckBox" text="Le livre est endommagé"/>
+                        <TextArea fx:id="damageNotesArea" promptText="Notes sur les dommages..."
+                                 visible="false" prefRowCount="3"/>
+                    </VBox>
+                </content>
+                <buttonTypes>
+                    <ButtonType fx:constant="OK"/>
+                    <ButtonType fx:constant="CANCEL"/>
+                </buttonTypes>
+            </DialogPane>
+        </dialogPane>
+    </Dialog>
+
+</VBox> 

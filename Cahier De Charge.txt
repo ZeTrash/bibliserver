@@ -1,0 +1,27 @@
+Parcours : ADR/IRM/TIM2
+Thème : 
+
+Développement d’une application client-serveur pour la gestion de bibliothèque (IST-D)
+
+Candidats :
+•	
+•	
+Contexte/ Problématique :
+Actuellement, un outil de gestion de la bibliothèque conçu avec Microsoft Office Access est disponible mais cet outil présente plusieurs limites. Afin de faciliter la gestion de cette bibliothèque, on propose d’utiliser un outil client-serveur.
+
+Objectifs :
+	Faciliter la gestion de la bibliothèque
+
+Travaux demandés :
+	Modélisation du système (MERISE)
+	Création de la base de données
+	Ajout de données
+	Création des requêtes les plus utilisées
+	Création des groupes des utilisateurs
+	Attribution des privilèges à chaque groupe d’utilisateur
+	Hébergement 
+	Test et intégration
+	Sécurisation du système
+Matériels : réseau local
+Encadreur : TSIMITAMBY Briand
+

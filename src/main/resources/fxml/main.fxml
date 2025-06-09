@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bibliserver.controller.MainController"
+            prefHeight="600.0" prefWidth="800.0">
+            
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <Label text="Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Separator/>
+            <Button text="Tableau de bord" onAction="#showDashboard" maxWidth="Infinity"/>
+            <Button text="Gestion des livres" onAction="#showBooks" maxWidth="Infinity"/>
+            <Button text="Gestion des emprunts" onAction="#showLoans" maxWidth="Infinity"/>
+            <Button fx:id="usersButton" text="Gestion des utilisateurs" onAction="#showUsers" maxWidth="Infinity"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label fx:id="currentUserLabel" text="Connecté en tant que: "/>
+            <Button text="Déconnexion" onAction="#handleLogout" maxWidth="Infinity"
+                    style="-fx-background-color: #ff4444; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
+    
+    <center>
+        <StackPane fx:id="contentArea">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <!-- Le contenu sera chargé dynamiquement ici -->
+        </StackPane>
+    </center>
+    
+</BorderPane> 

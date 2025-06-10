@@ -20,6 +20,7 @@ public class UserDAO {
             
             if (rs.next()) {
                 String storedHash = rs.getString("password_hash");
+                System.out.println("password_entrée: " + password + " ,pass_in_bdd: " + storedHash + " ,password_hashed: " + BCrypt.hashpw(password, BCrypt.gensalt()));
                 return BCrypt.checkpw(password, storedHash);
             }
             
@@ -28,7 +29,7 @@ public class UserDAO {
     }
     
     public User findById(int id) throws SQLException {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT u.*, g.name as group_name FROM users u LEFT JOIN `groups` g ON u.group_id = g.id WHERE u.id = ?";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -45,7 +46,7 @@ public class UserDAO {
     }
     
     public User findByUsername(String username) throws SQLException {
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT u.*, g.name as group_name FROM users u LEFT JOIN `groups` g ON u.group_id = g.id WHERE u.username = ?";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -61,8 +62,8 @@ public class UserDAO {
         }
     }
     
-    public void createUser(String username, String password, String role) throws SQLException {
-        String sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
+    public void createUser(String username, String password, int groupId) throws SQLException {
+        String sql = "INSERT INTO users (username, password_hash, group_id) VALUES (?, ?, ?)";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -71,7 +72,7 @@ public class UserDAO {
             
             pstmt.setString(1, username);
             pstmt.setString(2, hashedPassword);
-            pstmt.setString(3, role);
+            pstmt.setInt(3, groupId);
             
             pstmt.executeUpdate();
             
@@ -84,7 +85,7 @@ public class UserDAO {
     }
     
     public List<User> findAll() throws SQLException {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT u.*, g.name as group_name FROM users u LEFT JOIN `groups` g ON u.group_id = g.id";
         List<User> users = new ArrayList<>();
         
         try (Connection conn = DatabaseUtil.getConnection();
@@ -100,13 +101,13 @@ public class UserDAO {
     }
     
     public void updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET username = ?, role = ? WHERE id = ?";
+        String sql = "UPDATE users SET username = ?, group_id = ? WHERE id = ?";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getRole());
+            pstmt.setInt(2, user.getGroupId());
             pstmt.setInt(3, user.getId());
             
             pstmt.executeUpdate();
@@ -143,7 +144,8 @@ public class UserDAO {
         user.setId(rs.getInt("id"));
         user.setUsername(rs.getString("username"));
         user.setPasswordHash(rs.getString("password_hash"));
-        user.setRole(rs.getString("role"));
+        user.setGroupName(rs.getString("group_name"));
+        user.setGroupId(rs.getInt("group_id"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return user;
     }

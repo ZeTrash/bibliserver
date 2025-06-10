@@ -6,14 +6,15 @@ public class User {
     private int id;
     private String username;
     private String passwordHash;
-    private String role;
+    private String groupName;
     private LocalDateTime createdAt;
+    private int groupId;
 
     public User() {}
 
-    public User(String username, String role) {
+    public User(String username, String groupName) {
         this.username = username;
-        this.role = role;
+        this.groupName = groupName;
     }
 
     // Getters et Setters
@@ -41,12 +42,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public String getRole() {
-        return role;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -55,5 +56,13 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 } 

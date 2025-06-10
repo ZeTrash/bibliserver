@@ -10,8 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import com.bibliserver.util.SecurityUtil;
 
 public class MainController {
+    private static MainController instance;
+    
     @FXML
     private StackPane contentArea;
     
@@ -19,21 +22,55 @@ public class MainController {
     private Button usersButton;
     
     @FXML
+    private Button groupsButton;
+    
+    @FXML
     private Label currentUserLabel;
+    
+    @FXML
+    private Button booksButton;
+    
+    @FXML
+    private Button loansButton;
     
     private User currentUser;
     
+    @FXML
     public void initialize() {
+        instance = this;
         // Cette méthode est appelée automatiquement après le chargement du FXML
         showDashboard();
+    }
+    
+    public static MainController getInstance() {
+        return instance;
+    }
+    
+    public Button getBooksButton() {
+        return booksButton;
+    }
+    
+    public Button getLoansButton() {
+        return loansButton;
+    }
+    
+    public Button getUsersButton() {
+        return usersButton;
+    }
+    
+    public Button getGroupsButton() {
+        return groupsButton;
     }
     
     public void setCurrentUser(User user) {
         this.currentUser = user;
         currentUserLabel.setText("Connecté en tant que: " + user.getUsername());
         
-        // Afficher le bouton de gestion des utilisateurs uniquement pour les administrateurs
-        usersButton.setVisible("ADMIN".equals(user.getRole()));
+        // Mise à jour de la visibilité des boutons selon les privilèges
+        booksButton.setVisible(SecurityUtil.hasPermission(user, "BOOK", "READ"));
+        loansButton.setVisible(SecurityUtil.hasPermission(user, "LOAN", "READ"));
+        usersButton.setVisible(SecurityUtil.hasPermission(user, "USER", "READ"));
+        groupsButton.setVisible(SecurityUtil.hasPermission(user, "GROUP", "READ"));
     }
     
     @FXML
@@ -53,9 +90,14 @@ public class MainController {
     
     @FXML
     private void showUsers() {
-        if ("ADMIN".equals(currentUser.getRole())) {
+        if ("Administrateurs".equals(currentUser.getGroupName())) {
             loadView("/fxml/users.fxml");
         }
+    }
+    
+    @FXML
+    private void showGroups() {
+        loadView("/fxml/groups.fxml");
     }
     
     @FXML

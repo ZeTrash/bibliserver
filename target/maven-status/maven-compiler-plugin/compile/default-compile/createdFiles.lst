@@ -1,0 +1,16 @@
+com\bibliserver\controller\BooksController$1.class
+com\bibliserver\dao\BookDAO.class
+com\bibliserver\Main.class
+com\bibliserver\controller\DashboardController.class
+com\bibliserver\model\User.class
+com\bibliserver\dao\LoanDAO.class
+com\bibliserver\controller\LoansController$1.class
+com\bibliserver\controller\MainController.class
+com\bibliserver\controller\DashboardController$PopularBook.class
+com\bibliserver\controller\LoginController.class
+com\bibliserver\model\Loan.class
+com\bibliserver\controller\LoansController.class
+com\bibliserver\model\Book.class
+com\bibliserver\util\DatabaseUtil.class
+com\bibliserver\controller\BooksController.class
+com\bibliserver\dao\UserDAO.class

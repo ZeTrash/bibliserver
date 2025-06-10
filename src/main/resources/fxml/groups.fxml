@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bibliserver.controller.GroupsController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Gestion des Groupes" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Nouveau Groupe" onAction="#showAddGroupDialog"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+
+    <SplitPane dividerPositions="0.4" VBox.vgrow="ALWAYS">
+        <!-- Liste des groupes -->
+        <VBox spacing="10">
+            <ListView fx:id="groupsListView" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+        <!-- Détails du groupe et privilèges -->
+        <VBox spacing="10">
+            <GridPane hgap="10" vgap="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Label text="Nom du groupe:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="groupNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextArea fx:id="groupDescriptionArea" prefRowCount="3" 
+                         GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            </GridPane>
+
+            <Label text="Privilèges:" style="-fx-font-weight: bold;"/>
+            <TableView fx:id="privilegesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="privilegeNameColumn" text="Privilège" prefWidth="200"/>
+                    <TableColumn fx:id="privilegeDescriptionColumn" text="Description" prefWidth="200"/>
+                    <TableColumn fx:id="privilegeGrantedColumn" text="Accordé" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Enregistrer" onAction="#handleSave"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="Supprimer" onAction="#handleDelete"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </SplitPane>
+</VBox> 

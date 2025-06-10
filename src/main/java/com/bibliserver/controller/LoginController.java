@@ -10,8 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import com.bibliserver.util.DatabaseUtil;
 import com.bibliserver.dao.UserDAO;
+import com.bibliserver.dao.GroupDAO;
 import com.bibliserver.model.User;
 import org.mindrot.jbcrypt.BCrypt;
+import com.bibliserver.util.SecurityUtil;
 
 public class LoginController {
     @FXML
@@ -24,9 +26,12 @@ public class LoginController {
     private Label messageLabel;
     
     private UserDAO userDAO;
+    private GroupDAO groupDAO;
     
     public void initialize() {
         userDAO = new UserDAO();
+        groupDAO = new GroupDAO();
+        SecurityUtil.initialize(groupDAO);
     }
     
     @FXML
@@ -42,13 +47,33 @@ public class LoginController {
         try {
             if (userDAO.validateUser(username, password)) {
                 User user = userDAO.findByUsername(username);
-                loadMainView(user);
+                if (user != null && userDAO.validateUser(username, password)) {
+                    loadMainView(user);
+                } else {
+                    messageLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
+                }
             } else {
                 messageLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
             }
         } catch (Exception e) {
-            messageLabel.setText("Erreur de connexion à la base de données");
-            e.printStackTrace();
+            try {
+                DatabaseUtil.getConnection();
+                DatabaseUtil.executeSQLFile("src/main/resources/sql/init.sql");
+                if (userDAO.validateUser(username, password)) {
+                    User user = userDAO.findByUsername(username);
+                    if (user != null && userDAO.validateUser(username, password)) {
+                        loadMainView(user);
+                    } else {
+                        messageLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
+                    }
+                } else {
+                    messageLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
+                }
+            } catch (Exception ex) {
+                messageLabel.setText("Erreur de connexion à la base de données");
+                e.printStackTrace();
+                ex.printStackTrace();
+            }
         }
     }
     

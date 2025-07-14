@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bibliserver</a> &gt; <a href="index.source.html" class="el_package">com.bibliserver.util</a> &gt; <span class="el_source">SecurityUtil.java</span></div><h1>SecurityUtil.java</h1><pre class="source lang-java linenums">package com.bibliserver.util;
+
+import com.bibliserver.model.User;
+import com.bibliserver.model.Group;
+import com.bibliserver.model.Permission;
+import com.bibliserver.dao.GroupDAO;
+import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
+
+<span class="nc" id="L10">public class SecurityUtil {</span>
+    private static GroupDAO groupDAO;
+
+    public static void initialize(GroupDAO dao) {
+<span class="nc" id="L14">        groupDAO = dao;</span>
+<span class="nc" id="L15">    }</span>
+
+    public static boolean hasPermission(User user, String resource, String action) {
+        try {
+<span class="nc bnc" id="L19" title="All 4 branches missed.">            if (user == null || user.getGroupId() == 0) {</span>
+<span class="nc" id="L20">                return false;</span>
+            }
+
+<span class="nc" id="L23">            Group group = groupDAO.findById(user.getGroupId());</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">            if (group == null) {</span>
+<span class="nc" id="L25">                return false;</span>
+            }
+
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            for (Permission permission : group.getPermissions()) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">                if (permission.getResource().equals(resource) &amp;&amp; </span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                    permission.getAction().equals(action)) {</span>
+<span class="nc" id="L31">                    return true;</span>
+                }
+            }
+
+<span class="nc" id="L35">            return false;</span>
+<span class="nc" id="L36">        } catch (SQLException e) {</span>
+<span class="nc" id="L37">            e.printStackTrace();</span>
+<span class="nc" id="L38">            return false;</span>
+        }
+    }
+
+    public static void checkPermission(User user, String resource, String action) 
+            throws SecurityException {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (!hasPermission(user, resource, action)) {</span>
+<span class="nc" id="L45">            throw new SecurityException(&quot;Accès refusé : &quot; + resource + &quot;:&quot; + action);</span>
+        }
+<span class="nc" id="L47">    }</span>
+
+    public static boolean isAdmin(User user) {
+        try {
+<span class="nc bnc" id="L51" title="All 4 branches missed.">            if (user == null || user.getGroupId() == 0) {</span>
+<span class="nc" id="L52">                return false;</span>
+            }
+
+<span class="nc" id="L55">            Group group = groupDAO.findById(user.getGroupId());</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            return group != null &amp;&amp; &quot;Administrateurs&quot;.equals(group.getName());</span>
+<span class="nc" id="L57">        } catch (SQLException e) {</span>
+<span class="nc" id="L58">            e.printStackTrace();</span>
+<span class="nc" id="L59">            return false;</span>
+        }
+    }
+
+    public static boolean isLibrarian(User user) {
+        try {
+<span class="nc bnc" id="L65" title="All 4 branches missed.">            if (user == null || user.getGroupId() == 0) {</span>
+<span class="nc" id="L66">                return false;</span>
+            }
+
+<span class="nc" id="L69">            Group group = groupDAO.findById(user.getGroupId());</span>
+<span class="nc bnc" id="L70" title="All 4 branches missed.">            return group != null &amp;&amp; &quot;Bibliothécaires&quot;.equals(group.getName());</span>
+<span class="nc" id="L71">        } catch (SQLException e) {</span>
+<span class="nc" id="L72">            e.printStackTrace();</span>
+<span class="nc" id="L73">            return false;</span>
+        }
+    }
+
+    public static boolean isReader(User user) {
+        try {
+<span class="nc bnc" id="L79" title="All 4 branches missed.">            if (user == null || user.getGroupId() == 0) {</span>
+<span class="nc" id="L80">                return false;</span>
+            }
+
+<span class="nc" id="L83">            Group group = groupDAO.findById(user.getGroupId());</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">            return group != null &amp;&amp; &quot;Lecteurs&quot;.equals(group.getName());</span>
+<span class="nc" id="L85">        } catch (SQLException e) {</span>
+<span class="nc" id="L86">            e.printStackTrace();</span>
+<span class="nc" id="L87">            return false;</span>
+        }
+    }
+
+    // --- Hashage de mot de passe ---
+    public static String hashPassword(String password) {
+<span class="fc" id="L93">        return BCrypt.hashpw(password, BCrypt.gensalt());</span>
+    }
+
+    public static boolean verifyPassword(String password, String hash) {
+<span class="fc" id="L97">        return BCrypt.checkpw(password, hash);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

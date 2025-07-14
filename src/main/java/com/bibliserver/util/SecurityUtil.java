@@ -5,6 +5,7 @@ import com.bibliserver.model.Group;
 import com.bibliserver.model.Permission;
 import com.bibliserver.dao.GroupDAO;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class SecurityUtil {
     private static GroupDAO groupDAO;
@@ -85,5 +86,14 @@ public class SecurityUtil {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // --- Hashage de mot de passe ---
+    public static String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public static boolean verifyPassword(String password, String hash) {
+        return BCrypt.checkpw(password, hash);
     }
 } 

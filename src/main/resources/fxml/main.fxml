@@ -11,7 +11,10 @@
             
     <left>
         <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
-            <Label text="Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Label text="Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Button fx:id="themeToggleButton" text="🌙" tooltip="Basculer le mode sombre/clair" maxWidth="40" minWidth="40" minHeight="40" maxHeight="40"/>
+            </HBox>
             <Separator/>
             <Button text="Tableau de bord" onAction="#showDashboard" maxWidth="Infinity"/>
             <Button fx:id="booksButton" text="Gestion des livres" onAction="#showBooks" maxWidth="Infinity"/>

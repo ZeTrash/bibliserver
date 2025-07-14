@@ -14,7 +14,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Gestion des Groupes" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Nouveau Groupe" onAction="#showAddGroupDialog"
+        <Button text="➕ Nouveau Groupe" onAction="#showAddGroupDialog"
                 style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
     </HBox>
 
@@ -49,9 +49,9 @@
             </TableView>
 
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button text="Enregistrer" onAction="#handleSave"
+                <Button text="💾 Enregistrer" onAction="#handleSave"
                         style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-                <Button text="Supprimer" onAction="#handleDelete"
+                <Button text="🗑️ Supprimer" onAction="#handleDelete"
                         style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
             </HBox>
         </VBox>

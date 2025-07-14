@@ -10,6 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.util.Optional;
+import javafx.scene.control.Alert;
+import com.bibliserver.util.ToastUtil;
 
 public class BooksController {
     @FXML
@@ -162,8 +164,10 @@ public class BooksController {
             try {
                 bookDAO.delete(book.getId());
                 loadBooks();
+                ToastUtil.showToast(booksTable.getScene(), "Livre supprimé avec succès", true);
             } catch (SQLException e) {
                 showError("Erreur lors de la suppression", e);
+                ToastUtil.showToast(booksTable.getScene(), "Erreur lors de la suppression du livre", false);
             }
         }
     }
@@ -172,13 +176,16 @@ public class BooksController {
         try {
             if (selectedBook == null) {
                 bookDAO.create(book);
+                ToastUtil.showToast(booksTable.getScene(), "Livre ajouté avec succès", true);
             } else {
                 book.setId(selectedBook.getId());
                 bookDAO.update(book);
+                ToastUtil.showToast(booksTable.getScene(), "Livre modifié avec succès", true);
             }
             loadBooks();
         } catch (SQLException e) {
             showError("Erreur lors de l'enregistrement", e);
+            ToastUtil.showToast(booksTable.getScene(), "Erreur lors de l'enregistrement du livre", false);
         }
     }
     

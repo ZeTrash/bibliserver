@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.bibliserver.dao.GroupDAOTest" time="0.182" tests="1" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="javafx.runtime.version" value="17.0.2-ea+3"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\achim\Desktop\bibliserver\target\test-classes;C:\Users\achim\Desktop\bibliserver\target\classes;C:\Users\achim\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2-win.jar;C:\Users\achim\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar;C:\Users\achim\.m2\repository\com\google\protobuf\protobuf-java\3.21.9\protobuf-java-3.21.9.jar;C:\Users\achim\.m2\repository\org\mindrot\jbcrypt\0.4\jbcrypt-0.4.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\achim\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\achim\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\achim\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\achim\.m2\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;C:\Users\achim\.m2\repository\org\testfx\testfx-junit5\4.0.16-alpha\testfx-junit5-4.0.16-alpha.jar;C:\Users\achim\.m2\repository\org\testfx\testfx-core\4.0.16-alpha\testfx-core-4.0.16-alpha.jar;C:\Users\achim\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\achim\.m2\repository\org\assertj\assertj-core\3.13.2\assertj-core-3.13.2.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Asia/Baghdad"/>
+    <property name="javafx.version" value="17.0.2-ea"/>
+    <property name="os.name" value="Windows 10"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="FR"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
+    <property name="sun.java.command" value="C:\Users\achim\AppData\Local\Temp\surefire17629611589714487089\surefirebooter-20250714190958897_3.jar C:\Users\achim\AppData\Local\Temp\surefire17629611589714487089 2025-07-14T19-09-58_526-jvmRun1 surefire-20250714190958897_1tmp surefire_0-20250714190958897_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\achim\Desktop\bibliserver\target\test-classes;C:\Users\achim\Desktop\bibliserver\target\classes;C:\Users\achim\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2-win.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2.jar;C:\Users\achim\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2-win.jar;C:\Users\achim\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar;C:\Users\achim\.m2\repository\com\google\protobuf\protobuf-java\3.21.9\protobuf-java-3.21.9.jar;C:\Users\achim\.m2\repository\org\mindrot\jbcrypt\0.4\jbcrypt-0.4.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\achim\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\achim\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\achim\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\achim\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\achim\.m2\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;C:\Users\achim\.m2\repository\org\testfx\testfx-junit5\4.0.16-alpha\testfx-junit5-4.0.16-alpha.jar;C:\Users\achim\.m2\repository\org\testfx\testfx-core\4.0.16-alpha\testfx-core-4.0.16-alpha.jar;C:\Users\achim\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\achim\.m2\repository\org\assertj\assertj-core\3.13.2\assertj-core-3.13.2.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\achim"/>
+    <property name="user.language" value="fr"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2024-07-16"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-17"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\achim\Desktop\bibliserver"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\achim\AppData\Local\Temp\surefire17629611589714487089\surefirebooter-20250714190958897_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="17.0.12+8-LTS-286"/>
+    <property name="user.name" value="achim"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="Cp1252"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="C:\Users\achim\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\achim\AppData\Local\Temp\"/>
+    <property name="java.version" value="17.0.12"/>
+    <property name="user.dir" value="C:\Users\achim\Desktop\bibliserver"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-17\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\libnvvp;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;c:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;c:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;c:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\nodejs\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files\CMake\bin;C:\Users\achim\AppData\Local\Microsoft\WindowsApps;C:\Users\achim\AppData\Roaming\npm;C:\Users\achim\.dotnet\tools;C:\dart-sdk\bin;C:\flutter\bin;C:\Users\achim\.gradle\wrapper\dists\gradle-8.10.2-all\aocdy2d2z8kodnny3rsumj8i8\gradle-8.10.2\bin;c:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;c:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\achim\AppData\Local\Microsoft\WindowsApps;C:\Users\achim\AppData\Roaming\npm;C:\Users\achim\.dotnet\tools;C:\da;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\Nsight Compute 2024.3.2\;C:\wamp64\bin\mysql\mysql8.0.31\bin;C:\Program Files\Java\apache-maven-3.9.10\bin;C:\Users\achim\anaconda3;C:\Users\achim\anaconda3\Library\mingw-w64\bin;C:\Users\achim\anaconda3\Library\usr\bin;C:\Users\achim\anaconda3\Library\bin;C:\Users\achim\anaconda3\Scripts;C:\Users\achim\AppData\Local\Microsoft\WindowsApps;C:\Users\achim\.dotnet\tools;C:\Users\achim\AppData\Local\Programs\Microsoft VS Code\bin;C:\dart-sdk\bin;C:\flutter\bin;C:\Users\achim\.gradle\wrapper\dists\gradle-8.10.2-all\aocdy2d2z8kodnny3rsumj8i8\gradle-8.10.2\bin;C:\wamp64\bin\mysql\mysql8.0.31\bin;C:\wamp64\bin\php\php8.2.0;C:\Program Files\Java\apache-maven-3.9.10\bin;C:\Program Files (x86)\Nmap;C:\Users\achim\AppData\Local\Programs\cursor\resources\app\bin;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="17.0.12+8-LTS-286"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="testCreateAndFindGroup" classname="com.bibliserver.dao.GroupDAOTest" time="0.179"/>
+</testsuite>

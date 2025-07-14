@@ -1,0 +1,7 @@
+com\bibliserver\controller\UsersControllerTest.class
+com\bibliserver\dao\GroupDAOTest.class
+com\bibliserver\dao\LoanDAOTest.class
+com\bibliserver\dao\CleanDatabaseUtil.class
+com\bibliserver\util\SecurityUtilTest.class
+com\bibliserver\dao\BookDAOTest.class
+com\bibliserver\dao\UserDAOTest.class

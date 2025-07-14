@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DashboardController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bibliserver</a> &gt; <a href="index.source.html" class="el_package">com.bibliserver.controller</a> &gt; <span class="el_source">DashboardController.java</span></div><h1>DashboardController.java</h1><pre class="source lang-java linenums">package com.bibliserver.controller;
+
+import com.bibliserver.dao.BookDAO;
+import com.bibliserver.dao.LoanDAO;
+import com.bibliserver.model.Book;
+import com.bibliserver.model.Loan;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+
+<span class="nc" id="L19">public class DashboardController {</span>
+    @FXML
+    private Label totalBooksLabel;
+    
+    @FXML
+    private Label availableBooksLabel;
+    
+    @FXML
+    private Label activeLoansLabel;
+    
+    @FXML
+    private Label overdueLoansLabel;
+    
+    @FXML
+    private TableView&lt;Loan&gt; recentLoansTable;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; bookTitleColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; userNameColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; loanDateColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; dueDateColumn;
+    
+    @FXML
+    private TableView&lt;PopularBook&gt; popularBooksTable;
+    
+    @FXML
+    private TableColumn&lt;PopularBook, String&gt; popularBookTitleColumn;
+    
+    @FXML
+    private TableColumn&lt;PopularBook, String&gt; authorColumn;
+    
+    @FXML
+    private TableColumn&lt;PopularBook, Integer&gt; loanCountColumn;
+    
+    private BookDAO bookDAO;
+    private LoanDAO loanDAO;
+    private DateTimeFormatter dateFormatter;
+    
+    public void initialize() {
+<span class="nc" id="L64">        bookDAO = new BookDAO();</span>
+<span class="nc" id="L65">        loanDAO = new LoanDAO();</span>
+<span class="nc" id="L66">        dateFormatter = DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;);</span>
+        
+<span class="nc" id="L68">        setupTableColumns();</span>
+<span class="nc" id="L69">        loadStatistics();</span>
+<span class="nc" id="L70">        loadRecentLoans();</span>
+<span class="nc" id="L71">        loadPopularBooks();</span>
+<span class="nc" id="L72">    }</span>
+    
+    private void setupTableColumns() {
+        // Configuration des colonnes pour les emprunts récents
+<span class="nc" id="L76">        bookTitleColumn.setCellValueFactory(cellData -&gt; </span>
+<span class="nc" id="L77">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L78">                () -&gt; cellData.getValue().getBook().getTitle()</span>
+<span class="nc" id="L79">            )</span>
+        );
+        
+<span class="nc" id="L82">        userNameColumn.setCellValueFactory(cellData -&gt;</span>
+<span class="nc" id="L83">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L84">                () -&gt; cellData.getValue().getUser().getUsername()</span>
+<span class="nc" id="L85">            )</span>
+        );
+        
+<span class="nc" id="L88">        loanDateColumn.setCellValueFactory(cellData -&gt;</span>
+<span class="nc" id="L89">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L90">                () -&gt; cellData.getValue().getLoanDate().format(dateFormatter)</span>
+<span class="nc" id="L91">            )</span>
+        );
+        
+<span class="nc" id="L94">        dueDateColumn.setCellValueFactory(cellData -&gt;</span>
+<span class="nc" id="L95">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L96">                () -&gt; cellData.getValue().getDueDate().format(dateFormatter)</span>
+<span class="nc" id="L97">            )</span>
+        );
+        
+        // Configuration des colonnes pour les livres populaires
+<span class="nc" id="L101">        popularBookTitleColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;title&quot;));</span>
+<span class="nc" id="L102">        authorColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;author&quot;));</span>
+<span class="nc" id="L103">        loanCountColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;loanCount&quot;));</span>
+<span class="nc" id="L104">    }</span>
+    
+    private void loadStatistics() {
+        try {
+            // Charger les statistiques des livres
+<span class="nc" id="L109">            int totalBooks = 0;</span>
+<span class="nc" id="L110">            int availableBooks = 0;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            for (Book book : bookDAO.findAll()) {</span>
+<span class="nc" id="L112">                totalBooks += book.getQuantity();</span>
+<span class="nc" id="L113">                availableBooks += book.getAvailableQuantity();</span>
+            }
+<span class="nc" id="L115">            totalBooksLabel.setText(String.valueOf(totalBooks));</span>
+<span class="nc" id="L116">            availableBooksLabel.setText(String.valueOf(availableBooks));</span>
+            
+            // Charger les statistiques des emprunts
+<span class="nc" id="L119">            int activeLoans = 0;</span>
+<span class="nc" id="L120">            int overdueLoans = 0;</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            for (Loan loan : loanDAO.findActiveLoans()) {</span>
+<span class="nc" id="L122">                activeLoans++;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (loan.isOverdue()) {</span>
+<span class="nc" id="L124">                    overdueLoans++;</span>
+                }
+            }
+<span class="nc" id="L127">            activeLoansLabel.setText(String.valueOf(activeLoans));</span>
+<span class="nc" id="L128">            overdueLoansLabel.setText(String.valueOf(overdueLoans));</span>
+            
+<span class="nc" id="L130">        } catch (SQLException e) {</span>
+<span class="nc" id="L131">            showError(&quot;Erreur lors du chargement des statistiques&quot;, e);</span>
+        }
+<span class="nc" id="L133">    }</span>
+    
+    private void loadRecentLoans() {
+        try {
+<span class="nc" id="L137">            ObservableList&lt;Loan&gt; recentLoans = FXCollections.observableArrayList(</span>
+<span class="nc" id="L138">                loanDAO.findActiveLoans()</span>
+            );
+<span class="nc" id="L140">            recentLoansTable.setItems(recentLoans);</span>
+            
+<span class="nc" id="L142">        } catch (SQLException e) {</span>
+<span class="nc" id="L143">            showError(&quot;Erreur lors du chargement des emprunts récents&quot;, e);</span>
+        }
+<span class="nc" id="L145">    }</span>
+    
+    private void loadPopularBooks() {
+        try {
+            // Récupérer tous les livres
+<span class="nc" id="L150">            var books = bookDAO.findAll();</span>
+            // Récupérer tous les emprunts
+<span class="nc" id="L152">            var loans = loanDAO.findActiveLoans();</span>
+            // Compter le nombre d'emprunts par livre (id)
+<span class="nc" id="L154">            java.util.Map&lt;Integer, Integer&gt; loanCountMap = new java.util.HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">            for (var loan : loans) {</span>
+<span class="nc" id="L156">                int bookId = loan.getBook().getId();</span>
+<span class="nc" id="L157">                loanCountMap.put(bookId, loanCountMap.getOrDefault(bookId, 0) + 1);</span>
+            }
+            // Créer la liste des livres populaires
+<span class="nc" id="L160">            java.util.List&lt;PopularBook&gt; popularBooks = new java.util.ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            for (var book : books) {</span>
+<span class="nc" id="L162">                int count = loanCountMap.getOrDefault(book.getId(), 0);</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                if (count &gt; 0) {</span>
+<span class="nc" id="L164">                    popularBooks.add(new PopularBook(book.getTitle(), book.getAuthor(), count));</span>
+                }
+            }
+            // Trier par nombre d'emprunts décroissant
+<span class="nc" id="L168">            popularBooks.sort((a, b) -&gt; Integer.compare(b.getLoanCount(), a.getLoanCount()));</span>
+            // Afficher dans la table
+<span class="nc" id="L170">            popularBooksTable.setItems(FXCollections.observableArrayList(popularBooks));</span>
+<span class="nc" id="L171">        } catch (Exception e) {</span>
+<span class="nc" id="L172">            showError(&quot;Erreur lors du chargement des livres populaires&quot;, e);</span>
+        }
+<span class="nc" id="L174">    }</span>
+    
+    private void showError(String header, Exception e) {
+<span class="nc" id="L177">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L178">        alert.setTitle(&quot;Erreur&quot;);</span>
+<span class="nc" id="L179">        alert.setHeaderText(header);</span>
+<span class="nc" id="L180">        alert.setContentText(e.getMessage());</span>
+<span class="nc" id="L181">        alert.showAndWait();</span>
+<span class="nc" id="L182">    }</span>
+    
+    // Classe interne pour représenter un livre populaire avec son nombre d'emprunts
+    public static class PopularBook {
+        private String title;
+        private String author;
+        private int loanCount;
+        
+<span class="nc" id="L190">        public PopularBook(String title, String author, int loanCount) {</span>
+<span class="nc" id="L191">            this.title = title;</span>
+<span class="nc" id="L192">            this.author = author;</span>
+<span class="nc" id="L193">            this.loanCount = loanCount;</span>
+<span class="nc" id="L194">        }</span>
+        
+<span class="nc" id="L196">        public String getTitle() { return title; }</span>
+<span class="nc" id="L197">        public String getAuthor() { return author; }</span>
+<span class="nc" id="L198">        public int getLoanCount() { return loanCount; }</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

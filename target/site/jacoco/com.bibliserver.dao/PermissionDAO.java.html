@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PermissionDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bibliserver</a> &gt; <a href="index.source.html" class="el_package">com.bibliserver.dao</a> &gt; <span class="el_source">PermissionDAO.java</span></div><h1>PermissionDAO.java</h1><pre class="source lang-java linenums">package com.bibliserver.dao;
+
+import com.bibliserver.model.Permission;
+import com.bibliserver.util.DatabaseUtil;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="nc" id="L9">public class PermissionDAO {</span>
+
+    public List&lt;Permission&gt; findAll() throws SQLException {
+<span class="nc" id="L12">        List&lt;Permission&gt; permissions = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L13">        String sql = &quot;SELECT * FROM permissions&quot;;</span>
+        
+<span class="nc" id="L15">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L16">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
+<span class="nc" id="L17">             ResultSet rs = stmt.executeQuery()) {</span>
+            
+<span class="nc bnc" id="L19" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L20">                permissions.add(mapResultSetToPermission(rs));</span>
+            }
+        }
+        
+<span class="nc" id="L24">        return permissions;</span>
+    }
+
+    public Permission findById(int id) throws SQLException {
+<span class="nc" id="L28">        String sql = &quot;SELECT * FROM permissions WHERE id = ?&quot;;</span>
+        
+<span class="nc" id="L30">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L31">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L32">            stmt.setInt(1, id);</span>
+            
+<span class="nc" id="L34">            try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                if (rs.next()) {</span>
+<span class="nc" id="L36">                    return mapResultSetToPermission(rs);</span>
+                }
+            }
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        }</span>
+        
+<span class="nc" id="L41">        return null;</span>
+    }
+
+    public List&lt;Permission&gt; findByResource(String resource) throws SQLException {
+<span class="nc" id="L45">        List&lt;Permission&gt; permissions = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L46">        String sql = &quot;SELECT * FROM permissions WHERE resource = ?&quot;;</span>
+        
+<span class="nc" id="L48">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L49">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L50">            stmt.setString(1, resource);</span>
+            
+<span class="nc" id="L52">            try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L54">                    permissions.add(mapResultSetToPermission(rs));</span>
+                }
+            }
+        }
+        
+<span class="nc" id="L59">        return permissions;</span>
+    }
+
+    public void create(Permission permission) throws SQLException {
+<span class="nc" id="L63">        String sql = &quot;INSERT INTO permissions (name, description, resource, action) VALUES (?, ?, ?, ?)&quot;;</span>
+        
+<span class="nc" id="L65">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L66">             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+<span class="nc" id="L67">            stmt.setString(1, permission.getName());</span>
+<span class="nc" id="L68">            stmt.setString(2, permission.getDescription());</span>
+<span class="nc" id="L69">            stmt.setString(3, permission.getResource());</span>
+<span class="nc" id="L70">            stmt.setString(4, permission.getAction());</span>
+            
+<span class="nc" id="L72">            stmt.executeUpdate();</span>
+            
+<span class="nc" id="L74">            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                if (generatedKeys.next()) {</span>
+<span class="nc" id="L76">                    permission.setId(generatedKeys.getInt(1));</span>
+                }
+            }
+        }
+<span class="nc" id="L80">    }</span>
+
+    public void update(Permission permission) throws SQLException {
+<span class="nc" id="L83">        String sql = &quot;UPDATE permissions SET name = ?, description = ?, resource = ?, action = ? WHERE id = ?&quot;;</span>
+        
+<span class="nc" id="L85">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L86">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L87">            stmt.setString(1, permission.getName());</span>
+<span class="nc" id="L88">            stmt.setString(2, permission.getDescription());</span>
+<span class="nc" id="L89">            stmt.setString(3, permission.getResource());</span>
+<span class="nc" id="L90">            stmt.setString(4, permission.getAction());</span>
+<span class="nc" id="L91">            stmt.setInt(5, permission.getId());</span>
+            
+<span class="nc" id="L93">            stmt.executeUpdate();</span>
+        }
+<span class="nc" id="L95">    }</span>
+
+    public void delete(int id) throws SQLException {
+<span class="nc" id="L98">        String sql = &quot;DELETE FROM permissions WHERE id = ?&quot;;</span>
+        
+<span class="nc" id="L100">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L101">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L102">            stmt.setInt(1, id);</span>
+<span class="nc" id="L103">            stmt.executeUpdate();</span>
+        }
+<span class="nc" id="L105">    }</span>
+
+    private Permission mapResultSetToPermission(ResultSet rs) throws SQLException {
+<span class="nc" id="L108">        Permission permission = new Permission();</span>
+<span class="nc" id="L109">        permission.setId(rs.getInt(&quot;id&quot;));</span>
+<span class="nc" id="L110">        permission.setName(rs.getString(&quot;name&quot;));</span>
+<span class="nc" id="L111">        permission.setDescription(rs.getString(&quot;description&quot;));</span>
+<span class="nc" id="L112">        permission.setResource(rs.getString(&quot;resource&quot;));</span>
+<span class="nc" id="L113">        permission.setAction(rs.getString(&quot;action&quot;));</span>
+<span class="nc" id="L114">        return permission;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

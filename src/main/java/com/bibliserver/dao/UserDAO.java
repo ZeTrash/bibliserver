@@ -62,25 +62,26 @@ public class UserDAO {
         }
     }
     
-    public void createUser(String username, String password, int groupId) throws SQLException {
+    public void createUser(String username, String password, int groupId) throws SQLException, DuplicateUserException {
         String sql = "INSERT INTO users (username, password_hash, group_id) VALUES (?, ?, ?)";
-        
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            
             pstmt.setString(1, username);
             pstmt.setString(2, hashedPassword);
             pstmt.setInt(3, groupId);
-            
             pstmt.executeUpdate();
-            
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
                 int id = rs.getInt(1);
                 // Vous pouvez utiliser cet ID si nécessaire
             }
+        } catch (SQLException e) {
+            // Code erreur MySQL pour doublon : 1062
+            if (e.getErrorCode() == 1062 || (e.getMessage() != null && (e.getMessage().contains("Duplicate") || e.getMessage().contains("UNIQUE") || e.getMessage().contains("duplicata")))) {
+                throw new DuplicateUserException("Username already exists", e);
+            }
+            throw e;
         }
     }
     

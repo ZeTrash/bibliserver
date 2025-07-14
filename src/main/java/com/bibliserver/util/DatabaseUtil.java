@@ -15,12 +15,21 @@ public class DatabaseUtil {
     private static final String PASSWORD = "";
     
     private static Connection connection;
+    private static boolean useH2 = false;
+    
+    public static void useTestDatabase() {
+        useH2 = true;
+    }
     
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
+                if (useH2) {
+                    connection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
+                } else {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    connection = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
+                }
             } catch (SQLException e) {
                 // Si la base de données n'existe pas, on se connecte sans la base et on la crée
                 if (e.getMessage().contains("inconnue")) {

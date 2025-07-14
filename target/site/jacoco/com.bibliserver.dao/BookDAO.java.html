@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bibliserver</a> &gt; <a href="index.source.html" class="el_package">com.bibliserver.dao</a> &gt; <span class="el_source">BookDAO.java</span></div><h1>BookDAO.java</h1><pre class="source lang-java linenums">package com.bibliserver.dao;
+
+import com.bibliserver.model.Book;
+import com.bibliserver.util.DatabaseUtil;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L9">public class BookDAO {</span>
+    
+    public void create(Book book) throws SQLException {
+<span class="fc" id="L12">        String sql = &quot;INSERT INTO books (title, author, isbn, publication_year, publisher, quantity, available_quantity) &quot; +</span>
+                    &quot;VALUES (?, ?, ?, ?, ?, ?, ?)&quot;;
+        
+<span class="fc" id="L15">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="fc" id="L16">             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+            
+<span class="fc" id="L18">            pstmt.setString(1, book.getTitle());</span>
+<span class="fc" id="L19">            pstmt.setString(2, book.getAuthor());</span>
+<span class="fc" id="L20">            pstmt.setString(3, book.getIsbn());</span>
+<span class="fc" id="L21">            pstmt.setInt(4, book.getPublicationYear());</span>
+<span class="fc" id="L22">            pstmt.setString(5, book.getPublisher());</span>
+<span class="fc" id="L23">            pstmt.setInt(6, book.getQuantity());</span>
+<span class="fc" id="L24">            pstmt.setInt(7, book.getAvailableQuantity());</span>
+            
+<span class="fc" id="L26">            pstmt.executeUpdate();</span>
+            
+<span class="fc" id="L28">            ResultSet rs = pstmt.getGeneratedKeys();</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L30">                book.setId(rs.getInt(1));</span>
+            }
+        }
+<span class="fc" id="L33">    }</span>
+    
+    public Book findById(int id) throws SQLException {
+<span class="fc" id="L36">        String sql = &quot;SELECT * FROM books WHERE id = ?&quot;;</span>
+        
+<span class="fc" id="L38">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="fc" id="L39">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="fc" id="L41">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L42">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L45">                return mapResultSetToBook(rs);</span>
+            }
+            
+<span class="nc" id="L48">            return null;</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        }</span>
+    }
+    
+    public List&lt;Book&gt; findAll() throws SQLException {
+<span class="nc" id="L53">        String sql = &quot;SELECT * FROM books&quot;;</span>
+<span class="nc" id="L54">        List&lt;Book&gt; books = new ArrayList&lt;&gt;();</span>
+        
+<span class="nc" id="L56">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L57">             Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L58">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+            
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L61">                books.add(mapResultSetToBook(rs));</span>
+            }
+        }
+        
+<span class="nc" id="L65">        return books;</span>
+    }
+    
+    public void update(Book book) throws SQLException {
+<span class="nc" id="L69">        String sql = &quot;UPDATE books SET title = ?, author = ?, isbn = ?, publication_year = ?, &quot; +</span>
+                    &quot;publisher = ?, quantity = ?, available_quantity = ? WHERE id = ?&quot;;
+        
+<span class="nc" id="L72">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L73">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L75">            pstmt.setString(1, book.getTitle());</span>
+<span class="nc" id="L76">            pstmt.setString(2, book.getAuthor());</span>
+<span class="nc" id="L77">            pstmt.setString(3, book.getIsbn());</span>
+<span class="nc" id="L78">            pstmt.setInt(4, book.getPublicationYear());</span>
+<span class="nc" id="L79">            pstmt.setString(5, book.getPublisher());</span>
+<span class="nc" id="L80">            pstmt.setInt(6, book.getQuantity());</span>
+<span class="nc" id="L81">            pstmt.setInt(7, book.getAvailableQuantity());</span>
+<span class="nc" id="L82">            pstmt.setInt(8, book.getId());</span>
+            
+<span class="nc" id="L84">            pstmt.executeUpdate();</span>
+        }
+<span class="nc" id="L86">    }</span>
+    
+    public void delete(int id) throws SQLException {
+<span class="nc" id="L89">        String sql = &quot;DELETE FROM books WHERE id = ?&quot;;</span>
+        
+<span class="nc" id="L91">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L92">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L94">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L95">            pstmt.executeUpdate();</span>
+        }
+<span class="nc" id="L97">    }</span>
+    
+    public List&lt;Book&gt; searchBooks(String query) throws SQLException {
+<span class="nc" id="L100">        String sql = &quot;SELECT * FROM books WHERE title LIKE ? OR author LIKE ? OR isbn LIKE ?&quot;;</span>
+<span class="nc" id="L101">        List&lt;Book&gt; books = new ArrayList&lt;&gt;();</span>
+        
+<span class="nc" id="L103">        try (Connection conn = DatabaseUtil.getConnection();</span>
+<span class="nc" id="L104">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L106">            String searchPattern = &quot;%&quot; + query + &quot;%&quot;;</span>
+<span class="nc" id="L107">            pstmt.setString(1, searchPattern);</span>
+<span class="nc" id="L108">            pstmt.setString(2, searchPattern);</span>
+<span class="nc" id="L109">            pstmt.setString(3, searchPattern);</span>
+            
+<span class="nc" id="L111">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L113">                books.add(mapResultSetToBook(rs));</span>
+            }
+        }
+        
+<span class="nc" id="L117">        return books;</span>
+    }
+    
+    private Book mapResultSetToBook(ResultSet rs) throws SQLException {
+<span class="fc" id="L121">        Book book = new Book();</span>
+<span class="fc" id="L122">        book.setId(rs.getInt(&quot;id&quot;));</span>
+<span class="fc" id="L123">        book.setTitle(rs.getString(&quot;title&quot;));</span>
+<span class="fc" id="L124">        book.setAuthor(rs.getString(&quot;author&quot;));</span>
+<span class="fc" id="L125">        book.setIsbn(rs.getString(&quot;isbn&quot;));</span>
+<span class="fc" id="L126">        book.setPublicationYear(rs.getInt(&quot;publication_year&quot;));</span>
+<span class="fc" id="L127">        book.setPublisher(rs.getString(&quot;publisher&quot;));</span>
+<span class="fc" id="L128">        book.setQuantity(rs.getInt(&quot;quantity&quot;));</span>
+<span class="fc" id="L129">        book.setAvailableQuantity(rs.getInt(&quot;available_quantity&quot;));</span>
+<span class="fc" id="L130">        book.setCreatedAt(rs.getTimestamp(&quot;created_at&quot;).toLocalDateTime());</span>
+<span class="fc" id="L131">        return book;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.control.Alert;
+import com.bibliserver.util.ToastUtil;
 
 public class LoansController {
     @FXML
@@ -231,8 +233,10 @@ public class LoansController {
             try {
                 loanDAO.returnBook(loan.getId());
                 loadLoans();
+                ToastUtil.showToast(loansTable.getScene(), "Livre retourné avec succès", true);
             } catch (SQLException e) {
                 showError("Erreur lors du retour du livre", e);
+                ToastUtil.showToast(loansTable.getScene(), "Erreur lors du retour du livre", false);
             }
         }
     }
@@ -241,8 +245,10 @@ public class LoansController {
         try {
             loanDAO.create(loan);
             loadLoans();
+            ToastUtil.showToast(loansTable.getScene(), "Emprunt enregistré avec succès", true);
         } catch (SQLException e) {
             showError("Erreur lors de l'enregistrement de l'emprunt", e);
+            ToastUtil.showToast(loansTable.getScene(), "Erreur lors de l'enregistrement de l'emprunt", false);
         }
     }
     

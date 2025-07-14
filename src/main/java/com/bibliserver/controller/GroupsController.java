@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.ArrayList;
+import com.bibliserver.util.ToastUtil;
 
 public class GroupsController implements Initializable {
     
@@ -100,8 +101,10 @@ public class GroupsController implements Initializable {
             
             if (currentGroup.getId() == 0) {
                 groupDAO.create(currentGroup);
+                ToastUtil.showToast(groupNameField.getScene(), "Groupe ajouté avec succès", true);
             } else {
                 groupDAO.update(currentGroup);
+                ToastUtil.showToast(groupNameField.getScene(), "Groupe modifié avec succès", true);
             }
             
             // Mise à jour des privilèges
@@ -118,6 +121,7 @@ public class GroupsController implements Initializable {
             
         } catch (SQLException e) {
             showError("Erreur lors de l'enregistrement", e);
+            ToastUtil.showToast(groupNameField.getScene(), "Erreur lors de l'enregistrement du groupe", false);
         }
     }
     
@@ -136,8 +140,10 @@ public class GroupsController implements Initializable {
                     groupDAO.delete(currentGroup.getId());
                     loadGroups();
                     showAddGroupDialog(); // Reset form
+                    ToastUtil.showToast(groupNameField.getScene(), "Groupe supprimé avec succès", true);
                 } catch (SQLException e) {
                     showError("Erreur lors de la suppression", e);
+                    ToastUtil.showToast(groupNameField.getScene(), "Erreur lors de la suppression du groupe", false);
                 }
             }
         });

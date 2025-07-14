@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoansController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bibliserver</a> &gt; <a href="index.source.html" class="el_package">com.bibliserver.controller</a> &gt; <span class="el_source">LoansController.java</span></div><h1>LoansController.java</h1><pre class="source lang-java linenums">package com.bibliserver.controller;
+
+import com.bibliserver.dao.BookDAO;
+import com.bibliserver.dao.LoanDAO;
+import com.bibliserver.dao.UserDAO;
+import com.bibliserver.model.Book;
+import com.bibliserver.model.Loan;
+import com.bibliserver.model.User;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import javafx.scene.control.Alert;
+import com.bibliserver.util.ToastUtil;
+
+<span class="nc" id="L24">public class LoansController {</span>
+    @FXML
+    private ComboBox&lt;String&gt; filterComboBox;
+    
+    @FXML
+    private TableView&lt;Loan&gt; loansTable;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; bookTitleColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; userNameColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, LocalDate&gt; loanDateColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, LocalDate&gt; dueDateColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, String&gt; statusColumn;
+    
+    @FXML
+    private TableColumn&lt;Loan, Void&gt; actionsColumn;
+    
+    @FXML
+    private Dialog&lt;Loan&gt; loanDialog;
+    
+    @FXML
+    private ComboBox&lt;Book&gt; bookComboBox;
+    
+    @FXML
+    private ComboBox&lt;User&gt; userComboBox;
+    
+    @FXML
+    private DatePicker loanDatePicker;
+    
+    @FXML
+    private Spinner&lt;Integer&gt; durationSpinner;
+    
+    @FXML
+    private Label dueDateLabel;
+    
+        @FXML
+    private Dialog&lt;ButtonType&gt; returnDialog;
+
+    @FXML
+    private Label returnBookInfoLabel;
+    
+    @FXML
+    private Label returnUserInfoLabel;
+    
+    @FXML
+    private CheckBox damageCheckBox;
+    
+    @FXML
+    private TextArea damageNotesArea;
+    
+    private LoanDAO loanDAO;
+    private BookDAO bookDAO;
+    private UserDAO userDAO;
+    private DateTimeFormatter dateFormatter;
+    
+    public void initialize() {
+<span class="nc" id="L88">        loanDAO = new LoanDAO();</span>
+<span class="nc" id="L89">        bookDAO = new BookDAO();</span>
+<span class="nc" id="L90">        userDAO = new UserDAO();</span>
+<span class="nc" id="L91">        dateFormatter = DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;);</span>
+        
+<span class="nc" id="L93">        setupTableColumns();</span>
+<span class="nc" id="L94">        setupDialogs();</span>
+<span class="nc" id="L95">        setupFilterComboBox();</span>
+<span class="nc" id="L96">        loadLoans();</span>
+<span class="nc" id="L97">    }</span>
+    
+    private void setupTableColumns() {
+<span class="nc" id="L100">        bookTitleColumn.setCellValueFactory(cellData -&gt;</span>
+<span class="nc" id="L101">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L102">                () -&gt; cellData.getValue().getBook().getTitle()</span>
+<span class="nc" id="L103">            )</span>
+        );
+        
+<span class="nc" id="L106">        userNameColumn.setCellValueFactory(cellData -&gt;</span>
+<span class="nc" id="L107">            javafx.beans.binding.Bindings.createStringBinding(</span>
+<span class="nc" id="L108">                () -&gt; cellData.getValue().getUser().getUsername()</span>
+<span class="nc" id="L109">            )</span>
+        );
+        
+<span class="nc" id="L112">        loanDateColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;loanDate&quot;));</span>
+<span class="nc" id="L113">        dueDateColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;dueDate&quot;));</span>
+<span class="nc" id="L114">        statusColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;status&quot;));</span>
+        
+        // Configuration de la colonne d'actions
+<span class="nc" id="L117">        actionsColumn.setCellFactory(param -&gt; new TableCell&lt;&gt;() {</span>
+<span class="nc" id="L118">            private final Button returnButton = new Button(&quot;Retourner&quot;);</span>
+            
+            {
+<span class="nc" id="L121">                returnButton.setOnAction(event -&gt; {</span>
+<span class="nc" id="L122">                    Loan loan = getTableView().getItems().get(getIndex());</span>
+<span class="nc" id="L123">                    showReturnDialog(loan);</span>
+<span class="nc" id="L124">                });</span>
+            }
+            
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+<span class="nc" id="L129">                super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L130" title="All 4 branches missed.">                if (empty || getTableView().getItems().get(getIndex()).getStatus().equals(&quot;RETURNED&quot;)) {</span>
+<span class="nc" id="L131">                    setGraphic(null);</span>
+<span class="nc" id="L132">                } else {</span>
+<span class="nc" id="L133">                    setGraphic(returnButton);</span>
+                }
+<span class="nc" id="L135">            }</span>
+<span class="nc" id="L136">        });</span>
+<span class="nc" id="L137">    }</span>
+    
+    private void setupDialogs() {
+        // Configuration du dialogue de nouvel emprunt
+<span class="nc" id="L141">        loanDialog.setResultConverter(buttonType -&gt; {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (buttonType == ButtonType.OK) {</span>
+<span class="nc" id="L143">                Book selectedBook = bookComboBox.getValue();</span>
+<span class="nc" id="L144">                User selectedUser = userComboBox.getValue();</span>
+<span class="nc" id="L145">                LocalDate loanDate = loanDatePicker.getValue();</span>
+<span class="nc" id="L146">                int duration = durationSpinner.getValue();</span>
+                
+<span class="nc bnc" id="L148" title="All 6 branches missed.">                if (selectedBook != null &amp;&amp; selectedUser != null &amp;&amp; loanDate != null) {</span>
+<span class="nc" id="L149">                    return new Loan(selectedBook, selectedUser, loanDate, loanDate.plusDays(duration));</span>
+                }
+            }
+<span class="nc" id="L152">            return null;</span>
+        });
+        
+        // Mise à jour automatique de la date de retour prévue
+<span class="nc" id="L156">        durationSpinner.valueProperty().addListener((obs, oldVal, newVal) -&gt; </span>
+<span class="nc" id="L157">            updateDueDateLabel()</span>
+        );
+        
+<span class="nc" id="L160">        loanDatePicker.valueProperty().addListener((obs, oldVal, newVal) -&gt; </span>
+<span class="nc" id="L161">            updateDueDateLabel()</span>
+        );
+        
+        // Configuration du dialogue de retour
+<span class="nc" id="L165">        damageCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -&gt; </span>
+<span class="nc" id="L166">            damageNotesArea.setVisible(newVal)</span>
+        );
+<span class="nc" id="L168">    }</span>
+    
+    private void setupFilterComboBox() {
+<span class="nc" id="L171">        filterComboBox.getSelectionModel().selectedItemProperty().addListener(</span>
+<span class="nc" id="L172">            (obs, oldVal, newVal) -&gt; loadLoans()</span>
+        );
+<span class="nc" id="L174">    }</span>
+    
+    private void loadLoans() {
+        try {
+<span class="nc" id="L178">            List&lt;Loan&gt; allLoans = loanDAO.findActiveLoans();</span>
+<span class="nc" id="L179">            String filter = filterComboBox.getValue();</span>
+            
+<span class="nc" id="L181">            ObservableList&lt;Loan&gt; filteredLoans = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            for (Loan loan : allLoans) {</span>
+<span class="nc bnc" id="L183" title="All 4 branches missed.">                if (filter == null || filter.equals(&quot;Tous&quot;) ||</span>
+<span class="nc bnc" id="L184" title="All 4 branches missed.">                    (filter.equals(&quot;En cours&quot;) &amp;&amp; loan.getStatus().equals(&quot;ACTIVE&quot;)) ||</span>
+<span class="nc bnc" id="L185" title="All 4 branches missed.">                    (filter.equals(&quot;En retard&quot;) &amp;&amp; loan.isOverdue()) ||</span>
+<span class="nc bnc" id="L186" title="All 4 branches missed.">                    (filter.equals(&quot;Retournés&quot;) &amp;&amp; loan.getStatus().equals(&quot;RETURNED&quot;))) {</span>
+<span class="nc" id="L187">                    filteredLoans.add(loan);</span>
+                }
+            }
+            
+<span class="nc" id="L191">            loansTable.setItems(filteredLoans);</span>
+<span class="nc" id="L192">        } catch (SQLException e) {</span>
+<span class="nc" id="L193">            showError(&quot;Erreur lors du chargement des emprunts&quot;, e);</span>
+        }
+<span class="nc" id="L195">    }</span>
+    
+    @FXML
+    private void showNewLoanDialog() {
+        try {
+            // Charger les livres disponibles
+<span class="nc" id="L201">            ObservableList&lt;Book&gt; availableBooks = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">            for (Book book : bookDAO.findAll()) {</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">                if (book.getAvailableQuantity() &gt; 0) {</span>
+<span class="nc" id="L204">                    availableBooks.add(book);</span>
+                }
+            }
+<span class="nc" id="L207">            bookComboBox.setItems(availableBooks);</span>
+            
+            // Charger les utilisateurs
+<span class="nc" id="L210">            userComboBox.setItems(FXCollections.observableArrayList(userDAO.findAll()));</span>
+            
+            // Initialiser les valeurs par défaut
+<span class="nc" id="L213">            loanDatePicker.setValue(LocalDate.now());</span>
+<span class="nc" id="L214">            durationSpinner.getValueFactory().setValue(14);</span>
+<span class="nc" id="L215">            updateDueDateLabel();</span>
+            
+<span class="nc" id="L217">            Optional&lt;Loan&gt; result = loanDialog.showAndWait();</span>
+<span class="nc" id="L218">            result.ifPresent(this::saveLoan);</span>
+            
+<span class="nc" id="L220">        } catch (SQLException e) {</span>
+<span class="nc" id="L221">            showError(&quot;Erreur lors de la préparation du dialogue&quot;, e);</span>
+        }
+<span class="nc" id="L223">    }</span>
+    
+    private void showReturnDialog(Loan loan) {
+<span class="nc" id="L226">        returnBookInfoLabel.setText(&quot;Livre : &quot; + loan.getBook().getTitle());</span>
+<span class="nc" id="L227">        returnUserInfoLabel.setText(&quot;Emprunteur : &quot; + loan.getUser().getUsername());</span>
+<span class="nc" id="L228">        damageCheckBox.setSelected(false);</span>
+<span class="nc" id="L229">        damageNotesArea.clear();</span>
+        
+<span class="nc" id="L231">        Optional&lt;ButtonType&gt; result = returnDialog.showAndWait();</span>
+<span class="nc bnc" id="L232" title="All 4 branches missed.">        if (result.isPresent() &amp;&amp; result.get() == ButtonType.OK) {</span>
+            try {
+<span class="nc" id="L234">                loanDAO.returnBook(loan.getId());</span>
+<span class="nc" id="L235">                loadLoans();</span>
+<span class="nc" id="L236">                ToastUtil.showToast(loansTable.getScene(), &quot;Livre retourné avec succès&quot;, true);</span>
+<span class="nc" id="L237">            } catch (SQLException e) {</span>
+<span class="nc" id="L238">                showError(&quot;Erreur lors du retour du livre&quot;, e);</span>
+<span class="nc" id="L239">                ToastUtil.showToast(loansTable.getScene(), &quot;Erreur lors du retour du livre&quot;, false);</span>
+            }
+        }
+<span class="nc" id="L242">    }</span>
+    
+    private void saveLoan(Loan loan) {
+        try {
+<span class="nc" id="L246">            loanDAO.create(loan);</span>
+<span class="nc" id="L247">            loadLoans();</span>
+<span class="nc" id="L248">            ToastUtil.showToast(loansTable.getScene(), &quot;Emprunt enregistré avec succès&quot;, true);</span>
+<span class="nc" id="L249">        } catch (SQLException e) {</span>
+<span class="nc" id="L250">            showError(&quot;Erreur lors de l'enregistrement de l'emprunt&quot;, e);</span>
+<span class="nc" id="L251">            ToastUtil.showToast(loansTable.getScene(), &quot;Erreur lors de l'enregistrement de l'emprunt&quot;, false);</span>
+        }
+<span class="nc" id="L253">    }</span>
+    
+    private void updateDueDateLabel() {
+<span class="nc" id="L256">        LocalDate loanDate = loanDatePicker.getValue();</span>
+<span class="nc" id="L257">        Integer duration = durationSpinner.getValue();</span>
+        
+<span class="nc bnc" id="L259" title="All 4 branches missed.">        if (loanDate != null &amp;&amp; duration != null) {</span>
+<span class="nc" id="L260">            LocalDate dueDate = loanDate.plusDays(duration);</span>
+<span class="nc" id="L261">            dueDateLabel.setText(dueDate.format(dateFormatter));</span>
+        }
+<span class="nc" id="L263">    }</span>
+    
+    private void showError(String header, Exception e) {
+<span class="nc" id="L266">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L267">        alert.setTitle(&quot;Erreur&quot;);</span>
+<span class="nc" id="L268">        alert.setHeaderText(header);</span>
+<span class="nc" id="L269">        alert.setContentText(e.getMessage());</span>
+<span class="nc" id="L270">        alert.showAndWait();</span>
+<span class="nc" id="L271">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

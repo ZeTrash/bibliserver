@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 
 public class DashboardController {
     @FXML
@@ -127,8 +128,7 @@ public class DashboardController {
             overdueLoansLabel.setText(String.valueOf(overdueLoans));
             
         } catch (SQLException e) {
-            e.printStackTrace();
-            // TODO: Afficher une alerte d'erreur
+            showError("Erreur lors du chargement des statistiques", e);
         }
     }
     
@@ -140,15 +140,45 @@ public class DashboardController {
             recentLoansTable.setItems(recentLoans);
             
         } catch (SQLException e) {
-            e.printStackTrace();
-            // TODO: Afficher une alerte d'erreur
+            showError("Erreur lors du chargement des emprunts récents", e);
         }
     }
     
     private void loadPopularBooks() {
-        // TODO: Implémenter le chargement des livres populaires
-        // Cette fonctionnalité nécessite une requête SQL plus complexe
-        // qui compte le nombre d'emprunts par livre
+        try {
+            // Récupérer tous les livres
+            var books = bookDAO.findAll();
+            // Récupérer tous les emprunts
+            var loans = loanDAO.findActiveLoans();
+            // Compter le nombre d'emprunts par livre (id)
+            java.util.Map<Integer, Integer> loanCountMap = new java.util.HashMap<>();
+            for (var loan : loans) {
+                int bookId = loan.getBook().getId();
+                loanCountMap.put(bookId, loanCountMap.getOrDefault(bookId, 0) + 1);
+            }
+            // Créer la liste des livres populaires
+            java.util.List<PopularBook> popularBooks = new java.util.ArrayList<>();
+            for (var book : books) {
+                int count = loanCountMap.getOrDefault(book.getId(), 0);
+                if (count > 0) {
+                    popularBooks.add(new PopularBook(book.getTitle(), book.getAuthor(), count));
+                }
+            }
+            // Trier par nombre d'emprunts décroissant
+            popularBooks.sort((a, b) -> Integer.compare(b.getLoanCount(), a.getLoanCount()));
+            // Afficher dans la table
+            popularBooksTable.setItems(FXCollections.observableArrayList(popularBooks));
+        } catch (Exception e) {
+            showError("Erreur lors du chargement des livres populaires", e);
+        }
+    }
+    
+    private void showError(String header, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText(header);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
     }
     
     // Classe interne pour représenter un livre populaire avec son nombre d'emprunts

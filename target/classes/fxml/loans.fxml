@@ -93,7 +93,7 @@
                     </FXCollections>
                 </items>
             </ComboBox>
-            <Button text="Nouvel Emprunt" onAction="#showNewLoanDialog"
+            <Button text="➕ Nouvel Emprunt" onAction="#showNewLoanDialog"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
         </HBox>
 

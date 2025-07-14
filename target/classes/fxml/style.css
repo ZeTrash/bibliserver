@@ -1,0 +1,142 @@
+/*
+ * Charte visuelle avancée – Application de gestion de bibliothèque
+ * Palette : Bleu nuit, vert émeraude, jaune doré, bois clair, gris clair, rouge doux
+ * Typographie : Inter, Segoe UI, Roboto, Open Sans
+ */
+
+.root {
+    -fx-font-family: 'Inter', 'Segoe UI', 'Roboto', 'Open Sans', sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #F7F9FB 80%, #E9D8A6 100%);
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #223A5E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, #223A5E33, 6, 0.3, 0, 2);
+    -fx-cursor: hand;
+    -fx-padding: 10 24 10 24;
+    -fx-font-size: 15px;
+    -fx-transition: background-color 0.2s;
+}
+.button:hover {
+    -fx-background-color: #21B573;
+}
+.button:pressed {
+    -fx-background-color: #182B45;
+}
+.button:disabled {
+    -fx-background-color: #F2F2F2;
+    -fx-text-fill: #666666;
+    -fx-cursor: not-allowed;
+}
+
+/* Tableaux */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #223A5E, #21B573);
+}
+.table-view .column-header, .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+.table-row-cell:filled {
+    -fx-background-color: white;
+}
+.table-row-cell:filled:selected, .table-row-cell:filled:selected .text {
+    -fx-background-color: #21B573;
+    -fx-text-fill: white;
+}
+.table-row-cell:odd {
+    -fx-background-color: #F2F2F2;
+}
+
+/* Champs de saisie */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #21B573;
+    -fx-border-radius: 6;
+    -fx-padding: 8 12 8 36;
+    -fx-font-size: 15px;
+}
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #FFD700;
+    -fx-effect: dropshadow(gaussian, #FFD70044, 4, 0.2, 0, 2);
+}
+
+/* Dialogues */
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, #223A5E33, 12, 0.4, 0, 4);
+}
+.dialog-pane .button {
+    -fx-background-color: #21B573;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+}
+.dialog-pane .button:hover {
+    -fx-background-color: #FFD700;
+    -fx-text-fill: #223A5E;
+}
+
+/* Alertes */
+.alert {
+    -fx-background-color: #FFD700;
+    -fx-background-radius: 10;
+    -fx-font-size: 16px;
+    -fx-text-fill: #223A5E;
+}
+
+/* Barre latérale/navigation */
+.sidebar, .nav-bar {
+    -fx-background-color: #223A5E;
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+}
+.sidebar .button, .nav-bar .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.sidebar .button:hover, .nav-bar .button:hover {
+    -fx-background-color: #21B573;
+    -fx-text-fill: white;
+}
+
+/* Cartes/statistiques */
+.card {
+    -fx-background-color: #E9D8A6;
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, #223A5E22, 8, 0.2, 0, 2);
+    -fx-padding: 18 24 18 24;
+}
+
+/* Toasts/notifications */
+.toast {
+    -fx-background-color: rgba(33, 58, 94, 0.95);
+    -fx-text-fill: #FFD700;
+    -fx-background-radius: 8;
+    -fx-font-size: 15px;
+    -fx-padding: 12 24 12 24;
+}
+
+/* Icônes */
+.icon {
+    -fx-fill: #21B573;
+    -fx-font-size: 20px;
+}
+
+/* Responsive (exemple) */
+@media screen and (max-width: 800px) {
+    .root {
+        -fx-font-size: 13px;
+    }
+    .button {
+        -fx-font-size: 13px;
+        -fx-padding: 8 16 8 16;
+    }
+} 

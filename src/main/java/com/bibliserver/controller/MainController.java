@@ -33,11 +33,20 @@ public class MainController {
     @FXML
     private Button loansButton;
     
+    @FXML
+    private Button themeToggleButton;
+    
     private User currentUser;
+    
+    private boolean darkMode = false;
     
     @FXML
     public void initialize() {
         instance = this;
+        // Gestion du bouton de thème
+        if (themeToggleButton != null) {
+            themeToggleButton.setOnAction(e -> toggleTheme());
+        }
         // Cette méthode est appelée automatiquement après le chargement du FXML
         showDashboard();
     }
@@ -133,6 +142,21 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Afficher une alerte d'erreur
+        }
+    }
+
+    private void toggleTheme() {
+        Scene scene = themeToggleButton.getScene();
+        if (scene == null) return;
+        Parent root = scene.getRoot();
+        if (!darkMode) {
+            root.getStyleClass().add("dark-mode");
+            themeToggleButton.setText("☀️");
+            darkMode = true;
+        } else {
+            root.getStyleClass().remove("dark-mode");
+            themeToggleButton.setText("🌙");
+            darkMode = false;
         }
     }
 } 

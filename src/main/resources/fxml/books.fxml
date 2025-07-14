@@ -16,9 +16,9 @@
         <HBox spacing="10" alignment="CENTER_LEFT">
             <Label text="Gestion des Livres" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="searchField" promptText="Rechercher un livre..." prefWidth="250"/>
-            <Button text="Rechercher" onAction="#handleSearch"/>
-            <Button text="Nouveau Livre" onAction="#showAddBookDialog"
+            <TextField fx:id="searchField" promptText="🔍 Rechercher un livre..." prefWidth="250" style="-fx-background-radius: 20; -fx-effect: dropshadow(gaussian, #223A5E22, 4, 0.2, 0, 2); -fx-padding: 8 12 8 32;"/>
+            <Button text="🔍 Rechercher" onAction="#handleSearch"/>
+            <Button text="➕ Nouveau Livre" onAction="#showAddBookDialog"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
         </HBox>
 

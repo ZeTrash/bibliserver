@@ -5,6 +5,7 @@ import com.bibliserver.model.Book;
 import com.bibliserver.model.User;
 import com.bibliserver.util.DatabaseUtil;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,19 +124,27 @@ public class LoanDAO {
     }
     
     private Loan mapResultSetToLoan(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        int bookId = rs.getInt("book_id");
+        int userId = rs.getInt("user_id");
+        LocalDate loanDate = rs.getDate("loan_date").toLocalDate();
+        LocalDate dueDate = rs.getDate("due_date").toLocalDate();
+        Date returnDateSql = rs.getDate("return_date");
+        String status = rs.getString("status");
+
+        Book book = bookDAO.findById(bookId);
+        User user = userDAO.findById(userId);
+
         Loan loan = new Loan();
-        loan.setId(rs.getInt("id"));
-        loan.setBook(bookDAO.findById(rs.getInt("book_id")));
-        loan.setUser(userDAO.findById(rs.getInt("user_id")));
-        loan.setLoanDate(rs.getDate("loan_date").toLocalDate());
-        loan.setDueDate(rs.getDate("due_date").toLocalDate());
-        
-        Date returnDate = rs.getDate("return_date");
-        if (returnDate != null) {
-            loan.setReturnDate(returnDate.toLocalDate());
+        loan.setId(id);
+        loan.setBook(book);
+        loan.setUser(user);
+        loan.setLoanDate(loanDate);
+        loan.setDueDate(dueDate);
+        if (returnDateSql != null) {
+            loan.setReturnDate(returnDateSql.toLocalDate());
         }
-        
-        loan.setStatus(rs.getString("status"));
+        loan.setStatus(status);
         return loan;
     }
 } 

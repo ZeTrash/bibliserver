@@ -58,7 +58,6 @@ public class LoginController {
         } catch (Exception e) {
             try {
                 DatabaseUtil.getConnection();
-                DatabaseUtil.executeSQLFile("src/main/resources/sql/init.sql");
                 if (userDAO.validateUser(username, password)) {
                     User user = userDAO.findByUsername(username);
                     if (user != null && userDAO.validateUser(username, password)) {
@@ -92,9 +91,11 @@ public class LoginController {
             Stage stage = (Stage) scene.getWindow();
             
             // Remplacer le contenu par la vue principale
-            stage.setScene(new Scene(root));
+            Scene mainScene = new Scene(root);
+            mainScene.getStylesheets().add(getClass().getResource("/fxml/style-light.css").toExternalForm());
+            stage.setScene(mainScene);
             stage.setTitle("Gestion de Bibliothèque");
-            
+            stage.setMaximized(true); // Maximiser uniquement après connexion
         } catch (Exception e) {
             messageLabel.setText("Erreur lors du chargement de l'application");
             e.printStackTrace();

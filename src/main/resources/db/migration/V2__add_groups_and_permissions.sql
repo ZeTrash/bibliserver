@@ -87,4 +87,48 @@ INSERT INTO `group_permissions` (`group_id`, `permission_id`)
 SELECT g.id, p.id
 FROM `groups` g, `permissions` p
 WHERE g.name = 'Lecteurs'
-AND p.name IN ('BOOK_READ', 'LOAN_READ'); 
+AND p.name IN ('BOOK_READ', 'LOAN_READ');
+
+-- Table des informations spécifiques aux mémoires
+CREATE TABLE IF NOT EXISTS memoire_details (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT NOT NULL UNIQUE,
+    university VARCHAR(255),
+    supervisor VARCHAR(255),
+    year INT,
+    subject VARCHAR(255),
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+);
+
+-- Table des médias (CD, DVD, etc.)
+CREATE TABLE IF NOT EXISTS media (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(50) NOT NULL, -- 'CD', 'DVD', etc.
+    title VARCHAR(255),
+    description TEXT,
+    book_id INT, -- NULL si le média est indépendant
+    is_independent BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
+);
+
+-- Permissions pour la gestion des médias
+INSERT INTO `permissions` (`name`, `description`, `resource`, `action`) VALUES
+('MEDIA_CREATE', 'Créer un média', 'MEDIA', 'CREATE'),
+('MEDIA_READ', 'Consulter les médias', 'MEDIA', 'READ'),
+('MEDIA_UPDATE', 'Modifier un média', 'MEDIA', 'UPDATE'),
+('MEDIA_DELETE', 'Supprimer un média', 'MEDIA', 'DELETE')
+ON DUPLICATE KEY UPDATE description = VALUES(description);
+
+-- Attribution des permissions médias aux groupes
+INSERT INTO `group_permissions` (`group_id`, `permission_id`)
+SELECT g.id, p.id
+FROM `groups` g, `permissions` p
+WHERE g.name = 'Administrateurs'
+AND p.name IN ('MEDIA_CREATE', 'MEDIA_READ', 'MEDIA_UPDATE', 'MEDIA_DELETE');
+
+INSERT INTO `group_permissions` (`group_id`, `permission_id`)
+SELECT g.id, p.id
+FROM `groups` g, `permissions` p
+WHERE g.name = 'Bibliothécaires'
+AND p.name IN ('MEDIA_CREATE', 'MEDIA_READ', 'MEDIA_UPDATE', 'MEDIA_DELETE'); 

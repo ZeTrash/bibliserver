@@ -3,27 +3,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.util.Callback?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.bibliserver.controller.UsersController"
-      spacing="10">
+      spacing="10" styleClass="card">
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button fx:id="addButton" text="➕ Ajouter un utilisateur" onAction="#handleAddUser"/>
-        <Button fx:id="editButton" text="✏️ Modifier" onAction="#handleEditUser"/>
-        <Button fx:id="deleteButton" text="🗑️ Supprimer" onAction="#handleDeleteUser"/>
+        <FontIcon iconLiteral="fas-users" iconSize="28" styleClass="icon"/>
+        <Label text="Gestion des Utilisateurs"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addButton" onAction="#handleAddUser" text="Ajouter Utilisateur" styleClass="button"/>
     </HBox>
 
-    <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+    <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="table-view">
         <columns>
-            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
-            <TableColumn fx:id="usernameColumn" text="Nom d'utilisateur" prefWidth="150"/>
-            <TableColumn fx:id="groupNameColumn" text="Groupe" prefWidth="100"/>
-            <TableColumn fx:id="createdAtColumn" text="Date de création" prefWidth="150"/>
+            <TableColumn fx:id="idColumn" text="ID" minWidth="50" maxWidth="70"/>
+            <TableColumn fx:id="usernameColumn" text="Nom d'utilisateur" minWidth="120"/>
+            <TableColumn fx:id="groupNameColumn" text="Groupe" minWidth="100"/>
+            <TableColumn fx:id="createdAtColumn" text="Date de création" minWidth="120"/>
         </columns>
     </TableView>
 

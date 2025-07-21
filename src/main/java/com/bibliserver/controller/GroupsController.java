@@ -40,6 +40,19 @@ public class GroupsController implements Initializable {
         privilegeDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         privilegeGrantedColumn.setCellValueFactory(cellData -> cellData.getValue().grantedProperty());
         privilegeGrantedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(privilegeGrantedColumn));
+        // Tooltip dynamique sur la colonne description
+        privilegeDescriptionColumn.setCellFactory(tc -> new TableCell<PrivilegeWrapper, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(item);
+                if (item != null && !empty) {
+                    setTooltip(new Tooltip(item));
+                } else {
+                    setTooltip(null);
+                }
+            }
+        });
         
         // Chargement des groupes
         loadGroups();
@@ -106,16 +119,15 @@ public class GroupsController implements Initializable {
                 groupDAO.update(currentGroup);
                 ToastUtil.showToast(groupNameField.getScene(), "Groupe modifié avec succès", true);
             }
-            
-            // Mise à jour des privilèges
+
+            // Correction : supprimer tous les privilèges puis réinsérer uniquement ceux cochés
+            groupDAO.deleteAllPrivileges(currentGroup.getId());
             for (PrivilegeWrapper wrapper : privilegesTable.getItems()) {
                 if (wrapper.isGranted()) {
                     groupDAO.grantPrivilege(currentGroup.getId(), wrapper.getPrivilege().getId());
-                } else {
-                    groupDAO.revokePrivilege(currentGroup.getId(), wrapper.getPrivilege().getId());
                 }
             }
-            
+
             loadGroups();
             showInfo("Succès", "Le groupe a été enregistré avec succès.");
             
@@ -166,7 +178,7 @@ public class GroupsController implements Initializable {
     }
     
     // Classe wrapper pour les privilèges avec une propriété observable pour la case à cocher
-    private static class PrivilegeWrapper {
+    public static class PrivilegeWrapper {
         private final Privilege privilege;
         private final BooleanProperty granted;
         

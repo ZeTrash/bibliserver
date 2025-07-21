@@ -11,6 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import com.bibliserver.util.SecurityUtil;
+import org.kordamp.ikonli.javafx.FontIcon;
+import javafx.scene.control.Alert;
 
 public class MainController {
     private static MainController instance;
@@ -35,6 +37,11 @@ public class MainController {
     
     @FXML
     private Button themeToggleButton;
+    @FXML
+    private FontIcon themeIcon;
+    
+    @FXML
+    private Button mediaButton;
     
     private User currentUser;
     
@@ -47,6 +54,7 @@ public class MainController {
         if (themeToggleButton != null) {
             themeToggleButton.setOnAction(e -> toggleTheme());
         }
+        updateThemeIcon();
         // Cette méthode est appelée automatiquement après le chargement du FXML
         showDashboard();
     }
@@ -87,18 +95,15 @@ public class MainController {
         loadView("/fxml/dashboard.fxml");
     }
     
-    @FXML
-    private void showBooks() {
+    public void showBooks() {
         loadView("/fxml/books.fxml");
     }
     
-    @FXML
-    private void showLoans() {
+    public void showLoans() {
         loadView("/fxml/loans.fxml");
     }
     
-    @FXML
-    private void showUsers() {
+    public void showUsers() {
         if ("Administrateurs".equals(currentUser.getGroupName())) {
             loadView("/fxml/users.fxml");
         }
@@ -107,6 +112,19 @@ public class MainController {
     @FXML
     private void showGroups() {
         loadView("/fxml/groups.fxml");
+    }
+    
+    @FXML
+    private void showMedia() {
+        if (currentUser != null && com.bibliserver.util.SecurityUtil.hasPermission(currentUser, "MEDIA", "READ")) {
+            loadView("/fxml/media.fxml");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Accès refusé");
+            alert.setHeaderText("Droits insuffisants");
+            alert.setContentText("Vous n'avez pas la permission d'accéder à la gestion des médias.");
+            alert.showAndWait();
+        }
     }
     
     @FXML
@@ -121,9 +139,11 @@ public class MainController {
             Stage stage = (Stage) scene.getWindow();
             
             // Remplacer le contenu par la vue de connexion
-            stage.setScene(new Scene(root));
+            Scene loginScene = new Scene(root);
+            loginScene.getStylesheets().add(getClass().getResource("/fxml/style-light.css").toExternalForm());
+            stage.setScene(loginScene);
             stage.setTitle("Connexion - Gestion de Bibliothèque");
-            
+            stage.setMaximized(false); // Revenir à la taille normale sur l'écran de login
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: Afficher une alerte d'erreur
@@ -148,15 +168,45 @@ public class MainController {
     private void toggleTheme() {
         Scene scene = themeToggleButton.getScene();
         if (scene == null) return;
-        Parent root = scene.getRoot();
+        String light = getClass().getResource("/fxml/style-light.css").toExternalForm();
+        String dark = getClass().getResource("/fxml/style-dark.css").toExternalForm();
         if (!darkMode) {
-            root.getStyleClass().add("dark-mode");
-            themeToggleButton.setText("☀️");
+            scene.getStylesheets().remove(light);
+            if (!scene.getStylesheets().contains(dark)) {
+                scene.getStylesheets().add(dark);
+            }
             darkMode = true;
         } else {
-            root.getStyleClass().remove("dark-mode");
-            themeToggleButton.setText("🌙");
+            scene.getStylesheets().remove(dark);
+            if (!scene.getStylesheets().contains(light)) {
+                scene.getStylesheets().add(light);
+            }
             darkMode = false;
         }
+        updateThemeIcon();
+    }
+
+    private void updateThemeIcon() {
+        if (themeIcon != null) {
+            if (darkMode) {
+                themeIcon.setIconLiteral("fas-sun");
+            } else {
+                themeIcon.setIconLiteral("fas-moon");
+            }
+        }
+    }
+
+    public void showLoansWithFilter(String filter) {
+        LoansController.setInitialFilter(filter);
+        loadView("/fxml/loans.fxml");
+    }
+
+    public void showBooksWithFilter(String filter) {
+        BooksController.setInitialFilter(filter);
+        loadView("/fxml/books.fxml");
+    }
+    public void showUsersWithFilter(String filter) {
+        UsersController.setInitialFilter(filter);
+        loadView("/fxml/users.fxml");
     }
 } 

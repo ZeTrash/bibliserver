@@ -43,6 +43,13 @@
 - Rédaction et exécution des tests unitaires (partiellement présent, à compléter)
 - Tests d’intégration (client-serveur, partiellement présents)
 
+### 14/07/2025
+- Correction du test UI d’ajout d’utilisateur (attente explicite, robustesse ComboBox groupe)
+- Ajout d’un groupe de test automatique si besoin pour fiabiliser les tests UI
+- Tous les tests passent (DAO, UI)
+- JaCoCo fonctionne avec Java 17, rapport généré
+- Code poussé sur GitHub
+
 ---
 
 ### Légende

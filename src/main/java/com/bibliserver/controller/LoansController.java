@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import com.bibliserver.util.ToastUtil;
+import org.kordamp.ikonli.javafx.FontIcon;
+import javafx.geometry.Pos;
+import javafx.scene.paint.Color;
 
 public class LoansController {
     @FXML
@@ -42,9 +45,6 @@ public class LoansController {
     
     @FXML
     private TableColumn<Loan, String> statusColumn;
-    
-    @FXML
-    private TableColumn<Loan, Void> actionsColumn;
     
     @FXML
     private Dialog<Loan> loanDialog;
@@ -84,6 +84,9 @@ public class LoansController {
     private UserDAO userDAO;
     private DateTimeFormatter dateFormatter;
     
+    private static String initialFilter = null;
+    public static void setInitialFilter(String filter) { initialFilter = filter; }
+    
     public void initialize() {
         loanDAO = new LoanDAO();
         bookDAO = new BookDAO();
@@ -93,6 +96,10 @@ public class LoansController {
         setupTableColumns();
         setupDialogs();
         setupFilterComboBox();
+        if (initialFilter != null && filterComboBox != null) {
+            filterComboBox.setValue(initialFilter);
+            initialFilter = null;
+        }
         loadLoans();
     }
     
@@ -112,27 +119,64 @@ public class LoansController {
         loanDateColumn.setCellValueFactory(new PropertyValueFactory<>("loanDate"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        
+
         // Configuration de la colonne d'actions
+        TableColumn<Loan, Void> actionsColumn = new TableColumn<>("Actions");
+        actionsColumn.setMinWidth(200);
+        // Largeur automatique, pas de setMinWidth/setPrefWidth/setMaxWidth/setResizable
         actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button returnButton = new Button("Retourner");
-            
+            private final Button returnButton = new Button();
+            private final HBox buttons = new HBox(10, returnButton);
             {
+                FontIcon returnIcon = new FontIcon("fas-undo");
+                returnIcon.setIconColor(Color.WHITE);
+                returnButton.setGraphic(returnIcon);
+                returnButton.getStyleClass().addAll("action-btn", "edit-btn");
+                returnButton.setTooltip(new Tooltip("Enregistrer le retour de ce livre"));
                 returnButton.setOnAction(event -> {
                     Loan loan = getTableView().getItems().get(getIndex());
                     showReturnDialog(loan);
                 });
+                buttons.setAlignment(Pos.CENTER);
             }
-            
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || getTableView().getItems().get(getIndex()).getStatus().equals("RETURNED")) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(returnButton);
-                }
+                Loan loan = getIndex() >= 0 && getIndex() < getTableView().getItems().size() ? getTableView().getItems().get(getIndex()) : null;
+                setGraphic((empty || loan == null || "RETURNED".equals(loan.getStatus())) ? null : buttons);
+                setText(null);
             }
+        });
+        loansTable.getColumns().add(actionsColumn);
+
+        // Rafraîchir la colonne quand la sélection change
+        loansTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            loansTable.refresh();
+        });
+
+        // Configuration de la ligne de clic
+        loansTable.setRowFactory(param -> {
+            TableRow<Loan> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                Loan loan = row.getItem();
+                if (event.getClickCount() == 2 && !row.isEmpty() && loan != null && !"RETURNED".equals(loan.getStatus())) {
+                    showReturnDialog(loan);
+                }
+            });
+            return row;
+        });
+
+        // Binding pour colonnes flexibles
+        loansTable.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double tableWidth = newVal.doubleValue();
+            double flexWidth = tableWidth / 6;
+            bookTitleColumn.setPrefWidth(flexWidth);
+            userNameColumn.setPrefWidth(flexWidth);
+            loanDateColumn.setPrefWidth(flexWidth);
+            dueDateColumn.setPrefWidth(flexWidth);
+            statusColumn.setPrefWidth(flexWidth);
+            // Dernière colonne Actions
+            loansTable.getColumns().get(loansTable.getColumns().size() - 1).setPrefWidth(flexWidth);
         });
     }
     
@@ -205,18 +249,24 @@ public class LoansController {
                 }
             }
             bookComboBox.setItems(availableBooks);
-            
             // Charger les utilisateurs
             userComboBox.setItems(FXCollections.observableArrayList(userDAO.findAll()));
-            
             // Initialiser les valeurs par défaut
             loanDatePicker.setValue(LocalDate.now());
             durationSpinner.getValueFactory().setValue(14);
             updateDueDateLabel();
-            
             Optional<Loan> result = loanDialog.showAndWait();
-            result.ifPresent(this::saveLoan);
-            
+            result.ifPresent(loan -> {
+                if (loan.getBook().getGenre() != null && loan.getBook().getGenre().equals("Mémoire")) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Emprunt impossible");
+                    alert.setHeaderText("Ce livre est un mémoire");
+                    alert.setContentText("Les mémoires ne peuvent pas être empruntés.");
+                    alert.showAndWait();
+                } else {
+                    saveLoan(loan);
+                }
+            });
         } catch (SQLException e) {
             showError("Erreur lors de la préparation du dialogue", e);
         }

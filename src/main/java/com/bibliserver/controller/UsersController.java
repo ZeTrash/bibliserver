@@ -16,6 +16,10 @@ import com.bibliserver.model.Group;
 import org.mindrot.jbcrypt.BCrypt;
 import javafx.scene.layout.GridPane;
 import com.bibliserver.util.ToastUtil;
+import javafx.scene.layout.HBox;
+import org.kordamp.ikonli.javafx.FontIcon;
+import javafx.geometry.Pos;
+import javafx.scene.paint.Color;
 
 public class UsersController implements Initializable {
     
@@ -26,11 +30,13 @@ public class UsersController implements Initializable {
     @FXML private TableColumn<User, String> createdAtColumn;
     
     @FXML private Button addButton;
-    @FXML private Button editButton;
-    @FXML private Button deleteButton;
+    // Suppression de editButton et deleteButton
     
     private UserDAO userDAO;
     private GroupDAO groupDAO;
+    
+    private static String initialFilter = null;
+    public static void setInitialFilter(String filter) { initialFilter = filter; }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -46,19 +52,73 @@ public class UsersController implements Initializable {
             String date = cellData.getValue().getCreatedAt().format(formatter);
             return javafx.beans.binding.Bindings.createStringBinding(() -> date);
         });
-        
+
+        // Création dynamique de la colonne Actions
+        TableColumn<User, Void> actionsColumn = new TableColumn<>("Actions");
+        actionsColumn.setMinWidth(200);
+        actionsColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button editButton = new Button();
+            private final Button deleteButton = new Button();
+            private final HBox buttons = new HBox(10, editButton, deleteButton);
+            {
+                FontIcon editIcon = new FontIcon("fas-edit");
+                editIcon.setIconColor(Color.WHITE);
+                editButton.setGraphic(editIcon);
+                editButton.getStyleClass().addAll("action-btn", "edit-btn");
+                editButton.setTooltip(new Tooltip("Modifier cet utilisateur"));
+                editButton.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    usersTable.getSelectionModel().select(user);
+                    handleEditUser();
+                });
+                FontIcon deleteIcon = new FontIcon("fas-trash");
+                deleteIcon.setIconColor(Color.WHITE);
+                deleteButton.setGraphic(deleteIcon);
+                deleteButton.getStyleClass().addAll("action-btn", "delete-btn");
+                deleteButton.setTooltip(new Tooltip("Supprimer cet utilisateur"));
+                deleteButton.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    usersTable.getSelectionModel().select(user);
+                    handleDeleteUser();
+                });
+                buttons.setAlignment(Pos.CENTER);
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : buttons);
+                setText(null);
+            }
+        });
+        usersTable.getColumns().add(actionsColumn);
+        // Rafraîchir la colonne quand la sélection change
+        usersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            usersTable.refresh();
+        });
+
         // Chargement des données
         loadUsers();
-        
         // Activation/désactivation des boutons selon la sélection
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
-        
+        // Suppression de l'activation/désactivation de editButton et deleteButton
         usersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            boolean hasSelection = newSelection != null;
-            editButton.setDisable(!hasSelection);
-            deleteButton.setDisable(!hasSelection);
+            // plus besoin de gérer les boutons globaux
         });
+
+        // Binding pour colonnes flexibles
+        usersTable.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double tableWidth = newVal.doubleValue();
+            double idWidth = idColumn.getWidth();
+            double flexWidth = (tableWidth - idWidth) / 4;
+            usernameColumn.setPrefWidth(flexWidth);
+            groupNameColumn.setPrefWidth(flexWidth);
+            createdAtColumn.setPrefWidth(flexWidth);
+            actionsColumn.setPrefWidth(flexWidth);
+        });
+
+        if (initialFilter != null && usernameColumn != null) {
+            // Ici, tu peux filtrer la table selon le filtre si besoin
+            initialFilter = null;
+        }
     }
     
     private void loadUsers() {
@@ -215,10 +275,10 @@ public class UsersController implements Initializable {
                     }
                     loadUsers();
                     showInfo("Succès", "Utilisateur modifié avec succès.");
-                    ToastUtil.showToast(editButton.getScene(), "Utilisateur modifié avec succès", true);
+                    ToastUtil.showToast(addButton.getScene(), "Utilisateur modifié avec succès", true);
                 } catch (SQLException e) {
                     showError("Erreur lors de la modification de l'utilisateur", e);
-                    ToastUtil.showToast(editButton.getScene(), "Erreur lors de la modification de l'utilisateur", false);
+                    ToastUtil.showToast(addButton.getScene(), "Erreur lors de la modification de l'utilisateur", false);
                 }
             });
         }
@@ -238,10 +298,10 @@ public class UsersController implements Initializable {
                     try {
                         userDAO.deleteUser(selectedUser.getId());
                         loadUsers();
-                        ToastUtil.showToast(deleteButton.getScene(), "Utilisateur supprimé avec succès", true);
+                        ToastUtil.showToast(addButton.getScene(), "Utilisateur supprimé avec succès", true);
                     } catch (SQLException e) {
                         showError("Erreur lors de la suppression", e);
-                        ToastUtil.showToast(deleteButton.getScene(), "Erreur lors de la suppression", false);
+                        ToastUtil.showToast(addButton.getScene(), "Erreur lors de la suppression", false);
                     }
                 }
             });

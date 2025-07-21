@@ -12,9 +12,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/fxml/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/fxml/style-light.css").toExternalForm());
         primaryStage.setTitle("Gestion de Bibliothèque");
         primaryStage.setScene(scene);
+        // primaryStage.setMaximized(true); // Suppression du plein écran au démarrage
         primaryStage.show();
     }
 

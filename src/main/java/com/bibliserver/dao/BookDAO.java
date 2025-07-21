@@ -9,8 +9,8 @@ import java.util.List;
 public class BookDAO {
     
     public void create(Book book) throws SQLException {
-        String sql = "INSERT INTO books (title, author, isbn, publication_year, publisher, quantity, available_quantity) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books (title, author, isbn, publication_year, publisher, quantity, available_quantity, genre) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -22,6 +22,7 @@ public class BookDAO {
             pstmt.setString(5, book.getPublisher());
             pstmt.setInt(6, book.getQuantity());
             pstmt.setInt(7, book.getAvailableQuantity());
+            pstmt.setString(8, book.getGenre());
             
             pstmt.executeUpdate();
             
@@ -67,7 +68,7 @@ public class BookDAO {
     
     public void update(Book book) throws SQLException {
         String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, publication_year = ?, " +
-                    "publisher = ?, quantity = ?, available_quantity = ? WHERE id = ?";
+                    "publisher = ?, quantity = ?, available_quantity = ?, genre = ? WHERE id = ?";
         
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -79,7 +80,8 @@ public class BookDAO {
             pstmt.setString(5, book.getPublisher());
             pstmt.setInt(6, book.getQuantity());
             pstmt.setInt(7, book.getAvailableQuantity());
-            pstmt.setInt(8, book.getId());
+            pstmt.setString(8, book.getGenre());
+            pstmt.setInt(9, book.getId());
             
             pstmt.executeUpdate();
         }
@@ -128,6 +130,7 @@ public class BookDAO {
         book.setQuantity(rs.getInt("quantity"));
         book.setAvailableQuantity(rs.getInt("available_quantity"));
         book.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+        book.setGenre(rs.getString("genre"));
         return book;
     }
 } 

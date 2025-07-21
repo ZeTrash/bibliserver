@@ -6,6 +6,11 @@
 <?import javafx.collections.*?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.util.Callback?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <StackPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
@@ -75,13 +80,14 @@
         </Dialog>
     </fx:define>
 
-    <VBox spacing="20.0">
+    <VBox spacing="20.0" styleClass="card">
         <padding>
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
 
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Gestion des Emprunts" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <FontIcon iconLiteral="fas-book-reader" iconSize="28" styleClass="icon"/>
+            <Label text="Gestion des Emprunts"/>
             <Region HBox.hgrow="ALWAYS"/>
             <ComboBox fx:id="filterComboBox" promptText="Filtrer par statut">
                 <items>
@@ -93,18 +99,17 @@
                     </FXCollections>
                 </items>
             </ComboBox>
-            <Button text="➕ Nouvel Emprunt" onAction="#showNewLoanDialog"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button onAction="#showNewLoanDialog" styleClass="button" text="Nouvel Emprunt" />
         </HBox>
 
-        <TableView fx:id="loansTable" VBox.vgrow="ALWAYS">
+        <TableView fx:id="loansTable" VBox.vgrow="ALWAYS" styleClass="table-view">
             <columns>
-                <TableColumn fx:id="bookTitleColumn" text="Titre du Livre" prefWidth="250"/>
-                <TableColumn fx:id="userNameColumn" text="Emprunteur" prefWidth="150"/>
-                <TableColumn fx:id="loanDateColumn" text="Date d'emprunt" prefWidth="120"/>
-                <TableColumn fx:id="dueDateColumn" text="Date de retour prévue" prefWidth="120"/>
-                <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100"/>
-                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                <TableColumn fx:id="bookTitleColumn" text="Titre du Livre" minWidth="120"/>
+                <TableColumn fx:id="userNameColumn" text="Emprunteur" minWidth="100"/>
+                <TableColumn fx:id="loanDateColumn" text="Date d'emprunt" minWidth="80"/>
+                <TableColumn fx:id="dueDateColumn" text="Date de retour prévue" minWidth="80"/>
+                <TableColumn fx:id="statusColumn" text="Statut" minWidth="80"/>
+                <!-- Colonne Actions supprimée ici -->
             </columns>
         </TableView>
     </VBox>

@@ -3,75 +3,99 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ListView?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox spacing="20.0" xmlns="http://javafx.com/javafx"
+<ScrollPane fitToWidth="true" fitToHeight="true" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.bibliserver.controller.DashboardController">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <content>
+        <VBox styleClass="card">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
 
-    <Label text="Tableau de Bord" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Tableau de Bord" styleClass="section-title" alignment="CENTER_LEFT"/>
+            <Separator styleClass="separator"/>
+            <!-- Ajout d'un VBox pour l'espacement -->
+            <VBox spacing="30">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
 
-    <!-- Statistiques générales -->
-    <GridPane hgap="20" vgap="20">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="200"/>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="200"/>
-        </columnConstraints>
+                <!-- Cartes statistiques -->
+                <HBox spacing="20" alignment="CENTER">
+                    <VBox styleClass="stat-card" alignment="CENTER" spacing="8" prefWidth="180" onMouseClicked="#handleBooksCardClick">
+                        <FontIcon iconLiteral="fas-book" iconSize="36" styleClass="icon"/>
+                        <Label text="Livres" styleClass="title"/>
+                        <Label fx:id="totalBooksLabel" text="0" styleClass="value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" alignment="CENTER" spacing="8" prefWidth="180" onMouseClicked="#handleUsersCardClick">
+                        <FontIcon iconLiteral="fas-users" iconSize="36" styleClass="icon"/>
+                        <Label text="Utilisateurs" styleClass="title"/>
+                        <Label fx:id="totalUsersLabel" text="0" styleClass="value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" alignment="CENTER" spacing="8" prefWidth="180" onMouseClicked="#handleLoansCardClick">
+                        <FontIcon iconLiteral="fas-book-reader" iconSize="36" styleClass="icon"/>
+                        <Label text="Emprunts" styleClass="title"/>
+                        <Label fx:id="activeLoansLabel" text="0" styleClass="value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" alignment="CENTER" spacing="8" prefWidth="180" onMouseClicked="#handleOverdueCardClick">
+                        <FontIcon iconLiteral="fas-exclamation-circle" iconSize="36" styleClass="icon"/>
+                        <Label text="Retards" styleClass="title"/>
+                        <Label fx:id="overdueLoansLabel" text="0" styleClass="value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" alignment="CENTER" spacing="8" prefWidth="180" onMouseClicked="#handleAvailableBooksCardClick">
+                        <FontIcon iconLiteral="fas-book-open" iconSize="36" styleClass="icon"/>
+                        <Label text="Livres disponibles" styleClass="title"/>
+                        <Label fx:id="availableBooksLabel" text="0" styleClass="value"/>
+                    </VBox>
+                </HBox>
 
-        <!-- Total des livres -->
-        <VBox styleClass="stat-box" style="-fx-background-color: #e3f2fd; -fx-padding: 15; -fx-background-radius: 5;"
-              GridPane.columnIndex="0" GridPane.rowIndex="0">
-            <Label text="Total des Livres" style="-fx-font-weight: bold;"/>
-            <Label fx:id="totalBooksLabel" text="0" style="-fx-font-size: 24px;"/>
+                <!-- Graphique + Activité récente -->
+                <HBox spacing="20" alignment="TOP_CENTER">
+                    <VBox spacing="20" styleClass="card secondary" prefWidth="500" alignment="TOP_CENTER">
+                        <Label text="Statistiques de lecture" styleClass="section-title"/>
+                        <Separator styleClass="separator"/>
+                        <PieChart fx:id="statsPieChart" prefHeight="320" prefWidth="320"/>
+                    </VBox>
+                    <VBox spacing="10" styleClass="card secondary" prefWidth="400" alignment="TOP_CENTER">
+                        <Label text="Activité récente" styleClass="section-title"/>
+                        <Separator styleClass="separator"/>
+                        <ListView fx:id="activityListView" prefHeight="220"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Derniers emprunts -->
+            <VBox spacing="10" minHeight="200">
+                <Label text="Derniers Emprunts" styleClass="section-title" alignment="CENTER_LEFT"/>
+                <Separator styleClass="separator"/>
+                <TableView fx:id="recentLoansTable" VBox.vgrow="ALWAYS" style="-fx-text-fill: black; -fx-font-size: 16px;">
+                    <columns>
+                        <TableColumn fx:id="bookTitleColumn" text="Titre du Livre" prefWidth="200"/>
+                        <TableColumn fx:id="userNameColumn" text="Emprunteur" prefWidth="150"/>
+                        <TableColumn fx:id="loanDateColumn" text="Date d'emprunt" prefWidth="120"/>
+                        <TableColumn fx:id="dueDateColumn" text="Date de retour" prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Livres les plus empruntés -->
+            <VBox spacing="10" minHeight="200">
+                <Label text="Livres les Plus Empruntés"/>
+                <TableView fx:id="popularBooksTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                    <columns>
+                        <TableColumn fx:id="popularBookTitleColumn" text="Titre" prefWidth="250"/>
+                        <TableColumn fx:id="authorColumn" text="Auteur" prefWidth="200"/>
+                        <TableColumn fx:id="loanCountColumn" text="Nombre d'emprunts" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
         </VBox>
-
-        <!-- Livres disponibles -->
-        <VBox styleClass="stat-box" style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 5;"
-              GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <Label text="Livres Disponibles" style="-fx-font-weight: bold;"/>
-            <Label fx:id="availableBooksLabel" text="0" style="-fx-font-size: 24px;"/>
-        </VBox>
-
-        <!-- Emprunts actifs -->
-        <VBox styleClass="stat-box" style="-fx-background-color: #fff3e0; -fx-padding: 15; -fx-background-radius: 5;"
-              GridPane.columnIndex="0" GridPane.rowIndex="1">
-            <Label text="Emprunts Actifs" style="-fx-font-weight: bold;"/>
-            <Label fx:id="activeLoansLabel" text="0" style="-fx-font-size: 24px;"/>
-        </VBox>
-
-        <!-- Emprunts en retard -->
-        <VBox styleClass="stat-box" style="-fx-background-color: #ffebee; -fx-padding: 15; -fx-background-radius: 5;"
-              GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <Label text="Emprunts en Retard" style="-fx-font-weight: bold;"/>
-            <Label fx:id="overdueLoansLabel" text="0" style="-fx-font-size: 24px;"/>
-        </VBox>
-    </GridPane>
-
-    <!-- Derniers emprunts -->
-    <VBox spacing="10">
-        <Label text="Derniers Emprunts" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-        <TableView fx:id="recentLoansTable" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="bookTitleColumn" text="Titre du Livre" prefWidth="200"/>
-                <TableColumn fx:id="userNameColumn" text="Emprunteur" prefWidth="150"/>
-                <TableColumn fx:id="loanDateColumn" text="Date d'emprunt" prefWidth="120"/>
-                <TableColumn fx:id="dueDateColumn" text="Date de retour" prefWidth="120"/>
-            </columns>
-        </TableView>
-    </VBox>
-
-    <!-- Livres les plus empruntés -->
-    <VBox spacing="10">
-        <Label text="Livres les Plus Empruntés" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-        <TableView fx:id="popularBooksTable" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="popularBookTitleColumn" text="Titre" prefWidth="250"/>
-                <TableColumn fx:id="authorColumn" text="Auteur" prefWidth="200"/>
-                <TableColumn fx:id="loanCountColumn" text="Nombre d'emprunts" prefWidth="150"/>
-            </columns>
-        </TableView>
-    </VBox>
-
-</VBox> 
+    </content>
+</ScrollPane> 

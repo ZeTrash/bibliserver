@@ -87,4 +87,8 @@ public class Loan {
         this.returnDate = LocalDate.now();
         this.status = "RETURNED";
     }
+
+    public boolean isReturned() {
+        return status.equals("RETURNED");
+    }
 } 

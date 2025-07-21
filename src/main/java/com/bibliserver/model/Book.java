@@ -12,6 +12,7 @@ public class Book {
     private int quantity;
     private int availableQuantity;
     private LocalDateTime createdAt;
+    private String genre;
 
     public Book() {}
 
@@ -94,5 +95,18 @@ public class Book {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    @Override
+    public String toString() {
+        return title + " (" + author + ")";
     }
 } 

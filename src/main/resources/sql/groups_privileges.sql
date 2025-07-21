@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS group_privileges (
 ALTER TABLE users ADD COLUMN IF NOT EXISTS group_id INT,
 ADD FOREIGN KEY IF NOT EXISTS (group_id) REFERENCES user_groups(id);
 
+-- Ajout de la colonne genre à la table books si elle n'existe pas déjà
+ALTER TABLE books ADD COLUMN IF NOT EXISTS genre VARCHAR(100);
+
 -- Insertion des privilèges prédéfinis
 INSERT INTO privileges (name, description) VALUES
     ('MANAGE_BOOKS', 'Permet de gérer les livres (ajout, modification, suppression)'),
@@ -76,3 +79,43 @@ ON DUPLICATE KEY UPDATE group_id = group_id;
 UPDATE users 
 SET group_id = (SELECT id FROM user_groups WHERE name = 'Administrateurs')
 WHERE username = 'admin'; 
+
+-- Table des informations spécifiques aux mémoires
+CREATE TABLE IF NOT EXISTS memoire_details (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT NOT NULL UNIQUE,
+    university VARCHAR(255),
+    supervisor VARCHAR(255),
+    year INT,
+    subject VARCHAR(255),
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+);
+
+-- Table des médias (CD, DVD, etc.)
+CREATE TABLE IF NOT EXISTS media (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(50) NOT NULL, -- 'CD', 'DVD', etc.
+    title VARCHAR(255),
+    description TEXT,
+    book_id INT, -- NULL si le média est indépendant
+    is_independent BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
+);
+
+-- Privilèges pour la gestion des médias
+INSERT INTO privileges (name, description) VALUES
+    ('MANAGE_MEDIA', 'Permet de gérer les médias (ajout, modification, suppression)'),
+    ('VIEW_MEDIA', 'Permet de consulter la liste des médias')
+ON DUPLICATE KEY UPDATE description = VALUES(description);
+
+-- Attribution des privilèges médias aux groupes
+INSERT INTO group_privileges (group_id, privilege_id)
+SELECT (SELECT id FROM user_groups WHERE name = 'Administrateurs'), id
+FROM privileges WHERE name IN ('MANAGE_MEDIA', 'VIEW_MEDIA')
+ON DUPLICATE KEY UPDATE group_id = group_id;
+
+INSERT INTO group_privileges (group_id, privilege_id)
+SELECT (SELECT id FROM user_groups WHERE name = 'Bibliothécaires'), id
+FROM privileges WHERE name IN ('MANAGE_MEDIA', 'VIEW_MEDIA')
+ON DUPLICATE KEY UPDATE group_id = group_id; 

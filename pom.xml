@@ -38,6 +38,16 @@
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
@@ -84,12 +94,18 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.bibliserver.Main</mainClass>
-                    <options>
-                        <option>--add-modules</option>
-                        <option>javafx.controls,javafx.fxml,javafx.graphics,javafx.base</option>
-                        <option>--enable-preview</option>
-                    </options>
+                    <args>
+                        --add-modules=org.kordamp.ikonli.core,org.kordamp.ikonli.javafx,org.kordamp.ikonli.fontawesome5
+                    </args>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>com.bibliserver.Main</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -109,6 +125,30 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-base/${javafx.version}/javafx-base-${javafx.version}.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-controls/${javafx.version}/javafx-controls-${javafx.version}.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-fxml/${javafx.version}/javafx-fxml-${javafx.version}.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-graphics/${javafx.version}/javafx-graphics-${javafx.version}.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-base/${javafx.version}/javafx-base-${javafx.version}-win.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-controls/${javafx.version}/javafx-controls-${javafx.version}-win.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-fxml/${javafx.version}/javafx-fxml-${javafx.version}-win.jar</additionalClasspathElement>
+                        <additionalClasspathElement>${settings.localRepository}/org/openjfx/javafx-graphics/${javafx.version}/javafx-graphics-${javafx.version}-win.jar</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <argLine>
+                        --module-path "${settings.localRepository}/org/openjfx/javafx-base/${javafx.version}/javafx-base-${javafx.version}.jar;${settings.localRepository}/org/openjfx/javafx-controls/${javafx.version}/javafx-controls-${javafx.version}.jar;${settings.localRepository}/org/openjfx/javafx-fxml/${javafx.version}/javafx-fxml-${javafx.version}.jar;${settings.localRepository}/org/openjfx/javafx-graphics/${javafx.version}/javafx-graphics-${javafx.version}.jar;${settings.localRepository}/org/openjfx/javafx-base/${javafx.version}/javafx-base-${javafx.version}-win.jar;${settings.localRepository}/org/openjfx/javafx-controls/${javafx.version}/javafx-controls-${javafx.version}-win.jar;${settings.localRepository}/org/openjfx/javafx-fxml/${javafx.version}/javafx-fxml-${javafx.version}-win.jar;${settings.localRepository}/org/openjfx/javafx-graphics/${javafx.version}/javafx-graphics-${javafx.version}-win.jar" 
+                        --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base 
+                        --add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -65,4 +65,9 @@ public class User {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 } 

@@ -3,19 +3,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.util.Callback?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox spacing="20.0" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.bibliserver.controller.GroupsController">
+      fx:controller="com.bibliserver.controller.GroupsController" styleClass="card">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Gestion des Groupes" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <FontIcon iconLiteral="fas-user-friends" iconSize="28" styleClass="icon"/>
+        <Label text="Gestion des Groupes"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="➕ Nouveau Groupe" onAction="#showAddGroupDialog"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                styleClass="button">
+            <tooltip>
+                <Tooltip text="Créer un nouveau groupe d’utilisateurs."/>
+            </tooltip>
+        </Button>
     </HBox>
 
     <SplitPane dividerPositions="0.4" VBox.vgrow="ALWAYS">
@@ -32,27 +42,46 @@
                 </padding>
 
                 <Label text="Nom du groupe:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <TextField fx:id="groupNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <TextField fx:id="groupNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250">
+                    <tooltip>
+                        <Tooltip text="Saisissez le nom du groupe (ex : Administrateurs)"/>
+                    </tooltip>
+                </TextField>
 
                 <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <TextArea fx:id="groupDescriptionArea" prefRowCount="3" 
-                         GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextArea fx:id="groupDescriptionArea" prefRowCount="3" prefWidth="350"
+                         GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <tooltip>
+                        <Tooltip text="Décrivez le rôle ou les droits de ce groupe."/>
+                    </tooltip>
+                </TextArea>
             </GridPane>
 
-            <Label text="Privilèges:" style="-fx-font-weight: bold;"/>
-            <TableView fx:id="privilegesTable" VBox.vgrow="ALWAYS">
+            <Label text="Privilèges:"/>
+            <TableView fx:id="privilegesTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                <tooltip>
+                    <Tooltip text="Liste des privilèges associés à ce groupe. Survolez une ligne pour voir la description complète."/>
+                </tooltip>
                 <columns>
                     <TableColumn fx:id="privilegeNameColumn" text="Privilège" prefWidth="200"/>
                     <TableColumn fx:id="privilegeDescriptionColumn" text="Description" prefWidth="200"/>
-                    <TableColumn fx:id="privilegeGrantedColumn" text="Accordé" prefWidth="80"/>
+                    <TableColumn fx:id="privilegeGrantedColumn" text="Accordé" prefWidth="80" minWidth="80"/>
                 </columns>
             </TableView>
 
             <HBox spacing="10" alignment="CENTER_RIGHT">
                 <Button text="💾 Enregistrer" onAction="#handleSave"
-                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                        styleClass="button">
+                    <tooltip>
+                        <Tooltip text="Enregistrer les modifications du groupe."/>
+                    </tooltip>
+                </Button>
                 <Button text="🗑️ Supprimer" onAction="#handleDelete"
-                        style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                        styleClass="chaos-button">
+                    <tooltip>
+                        <Tooltip text="Supprimer ce groupe et ses privilèges."/>
+                    </tooltip>
+                </Button>
             </HBox>
         </VBox>
     </SplitPane>

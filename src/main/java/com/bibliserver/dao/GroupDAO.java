@@ -260,6 +260,15 @@ INNER JOIN group_permissions gp ON p.id = gp.permission_id
         }
     }
     
+    public void deleteAllPrivileges(int groupId) throws SQLException {
+        String sql = "DELETE FROM group_permissions WHERE group_id = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, groupId);
+            stmt.executeUpdate();
+        }
+    }
+    
     private Privilege mapResultSetToPrivilege(ResultSet rs) throws SQLException {
         return new Privilege(
             rs.getInt("id"),

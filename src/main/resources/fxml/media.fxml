@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.util.*?>
+<?import java.lang.String?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.collections.FXCollections?>
+
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bibliserver.controller.MediaController"
+      spacing="16" styleClass="card">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <FontIcon iconLiteral="fas-compact-disc" iconSize="28" styleClass="icon"/>
+        <Label text="Gestion des Médias" styleClass="title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="filterComboBox" promptText="Filtrer">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Tous"/>
+                    <String fx:value="Associés à un livre"/>
+                    <String fx:value="Indépendants"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <TextField fx:id="searchField" promptText="Rechercher un média..." prefWidth="200"/>
+        <Button text="Rechercher" onAction="#handleSearch" styleClass="button"/>
+        <Button fx:id="addButton" text="Ajouter un média" styleClass="button"/>
+    </HBox>
+
+    <TableView fx:id="mediaTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+        <columns>
+            <TableColumn fx:id="typeColumn" text="Type" minWidth="80"/>
+            <TableColumn fx:id="titleColumn" text="Titre" minWidth="120"/>
+            <TableColumn fx:id="descriptionColumn" text="Description" minWidth="180"/>
+            <TableColumn fx:id="bookTitleColumn" text="Livre associé" minWidth="120"/>
+            <TableColumn fx:id="createdAtColumn" text="Ajouté le" minWidth="120"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" minWidth="140"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="removeButton" text="Supprimer le média sélectionné" styleClass="chaos-button"/>
+    </HBox>
+</VBox> 

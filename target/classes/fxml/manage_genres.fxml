@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bibliserver.controller.ManageGenresController" spacing="15" alignment="CENTER" styleClass="card" minWidth="350">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Gestion des genres" styleClass="title"/>
+    <TableView fx:id="genresTable" prefHeight="180" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Nom du genre" prefWidth="200"/>
+        </columns>
+    </TableView>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="newGenreField" promptText="Nouveau genre..."/>
+        <Button fx:id="addGenreButton" text="Ajouter"/>
+        <Button fx:id="deleteGenreButton" text="Supprimer le genre sélectionné"/>
+    </HBox>
+    <HBox alignment="CENTER_RIGHT">
+        <Button fx:id="closeButton" text="Fermer"/>
+    </HBox>
+</VBox> 
